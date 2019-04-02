@@ -17,12 +17,12 @@
  * specified Card at the chosen x,y location. */
 void printCard(Card c, int x, int y, bool sel) {
     // Choose Unicode glyph based on Card
-    wchar_t unicard = L'\U0001F000' + c.rank + L"\xD0\xC0\xB0\xA0"[c.suit];
+    wchar_t unicard = L'\U0001F000' + rank(c) + L"\xD0\xC0\xB0\xA0"[suit(c)];
 
     // Assign attributes
     int attrs = 0;
-    if (c.suit == diamonds || c.suit == hearts) attrs = COLOR_PAIR(RED_CARD);
-    if (c.suit == spades   || c.suit == clubs)  attrs = COLOR_PAIR(BLACK_CARD);
+    if (suit(c) == DIAMONDS || suit(c) == HEARTS) attrs = COLOR_PAIR(RED_CARD);
+    if (suit(c) == SPADES   || suit(c) == CLUBS)  attrs = COLOR_PAIR(BLACK_CARD);
     if (sel) y--;
 
     // Draw Card
