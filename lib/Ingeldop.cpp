@@ -147,3 +147,27 @@ uint8_t Ingeldop::handSize() {
 uint8_t Ingeldop::deckSize() {
     return this->deck.size();
 }
+
+
+bool Ingeldop::gameOver() {
+    // Never over if still cards in deck
+    if (this->deckSize() != 0) return false;
+
+    for (int i = 0; i < this->handSize(); i++) {
+        int i0 = (i+0) % this->handSize();
+        int i1 = (i+1) % this->handSize();
+        int i2 = (i+2) % this->handSize();
+        int i3 = (i+3) % this->handSize();
+
+        Card c0 = this->cardAt(i0);
+        Card c1 = this->cardAt(i1);
+        Card c2 = this->cardAt(i2);
+        Card c3 = this->cardAt(i3);
+
+        if (this->handSize() >= 2 && rank(c0) == rank(c1)) return false; // Check for pairs
+        if (this->handSize() >= 4 && rank(c0) == rank(c3)) return false; // Check between pairs
+        if (this->handSize() >= 4 && suit(c0) == suit(c3)) return false; // Check between suits
+    }
+
+    return true;
+}

@@ -376,11 +376,109 @@ TEST(Ingeldop, discardingInbetween2) {
     ASSERT_EQ(game->cardAt(3), SPADE_A);    // Check Card value
 }
 
-// TODO: test detecting no more moves
-TEST(Ingeldop, gameover) {
+// Test no moves after full deal
+TEST(Ingeldop, gameover0) {
+    vector<Card> deck = {DIAMOND_3, CLUB_10, HEART_5, SPADE_A};
+    Ingeldop* game = new Ingeldop(deck);
 
+    // Deal all the cards in the deck
+    while (game->deckSize() != 0) {
+        ASSERT_FALSE(game->gameOver());
+        game->deal();
+    }
+
+    // No possible discards
+    ASSERT_TRUE(game->gameOver());
 }
 
+// Test pairs left
+TEST(Ingeldop, gameover1) {
+    vector<Card> deck = {DIAMOND_3, CLUB_5, HEART_5, SPADE_A};
+    Ingeldop* game = new Ingeldop(deck);
+
+    // Deal all the cards in the deck
+    while (game->deckSize() != 0) {
+        ASSERT_FALSE(game->gameOver());
+        game->deal();
+    }
+
+    // Can discard that pair
+    ASSERT_FALSE(game->gameOver());
+
+    // Check for pairs that span boundaries
+    game->deal();
+    game->deal();
+    ASSERT_FALSE(game->gameOver());
+
+    // Discard them, then check
+    game->deal();
+    game->select(0, true);
+    game->select(1, true);
+    game->discard();
+    ASSERT_TRUE(game->gameOver());
+}
+
+// Test between pairs
+TEST(Ingeldop, gameover2) {
+    vector<Card> deck = {DIAMOND_3, CLUB_5, CLUB_4, SPADE_A, HEART_5};
+    Ingeldop* game = new Ingeldop(deck);
+
+    // Deal all the cards in the deck
+    while (game->deckSize() != 0) {
+        ASSERT_FALSE(game->gameOver());
+        game->deal();
+    }
+
+    // Can discard between pair
+    ASSERT_FALSE(game->gameOver());
+
+    // Check between pairs that span boundaries
+    game->deal();
+    game->deal();
+    ASSERT_FALSE(game->gameOver());
+
+    // Discard them, then check
+    game->deal();
+    game->deal();
+    game->select(1, true);
+    game->select(2, true);
+    game->discard();
+    ASSERT_FALSE(game->gameOver());
+
+    // Discard pair, game over
+    game->select(0, true);
+    game->select(1, true);
+    game->discard();
+    ASSERT_TRUE(game->gameOver());
+}
+
+// Test between suits
+TEST(Ingeldop, gameover3) {
+    vector<Card> deck = {CLUB_5, DIAMOND_4, SPADE_A, HEART_8, DIAMOND_3};
+    Ingeldop* game = new Ingeldop(deck);
+
+    // Deal all the cards in the deck
+    while (game->deckSize() != 0) {
+        ASSERT_FALSE(game->gameOver());
+        game->deal();
+    }
+
+    // Can discard between suit
+    ASSERT_FALSE(game->gameOver());
+
+    // Check between pairs that span boundaries
+    game->deal();
+    game->deal();
+    ASSERT_FALSE(game->gameOver());
+
+    // Discard them, then check
+    game->deal();
+    game->deal();
+    game->select(1, true);
+    game->select(2, true);
+    game->discard();
+    ASSERT_TRUE(game->gameOver());
+}
 
 
 int main(int argc, char **argv) {
