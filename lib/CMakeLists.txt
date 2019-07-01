@@ -1,4 +1,4 @@
-add_library(libingeldop STATIC Ingeldop.cpp 
+add_library(libingeldop STATIC Ingeldop.cpp
                                Ingeldop.hpp)
 
 # TODO: add tidy format for clang tidy                           

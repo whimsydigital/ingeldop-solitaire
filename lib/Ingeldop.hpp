@@ -20,6 +20,7 @@ using std::vector;
 
 
 enum Card {
+    ERR_NOCARD = -1,
     CLUBS    = 0x100, CLUB_A,
     CLUB_2,           CLUB_3,
     CLUB_4,           CLUB_5,
@@ -73,7 +74,7 @@ class Ingeldop {
      *          of the deck. If no seed is provided
      *          the shuffle will use a random seed.
      */
-    Ingeldop(const vector<Card>&);
+    Ingeldop(Card[], int seedSize);
     Ingeldop(void);
 
 
@@ -97,7 +98,7 @@ class Ingeldop {
      * Returns:
      *   the number of Cards in the hand
      */
-    uint8_t handSize(void);
+    uint8_t getHandSize(void);
 
 
     /* The current size of the deck.
@@ -105,7 +106,7 @@ class Ingeldop {
      * Returns:
      *   the number of Cards left in the deck
      */
-    uint8_t deckSize(void);
+    uint8_t getDeckSize(void);
 
 
     /* Discards the selected Cards.
@@ -115,12 +116,8 @@ class Ingeldop {
      *   2) index (0,1) both same rank
      *   3) index (1,2) where (0,3) both same rank
      *   4) index (1,2) where (0,3) both same suit
-     *
-     * Throws:
-     *   Exceptions if we can't discard
-     *   TODO
      */
-    void discard(void);
+    bool discard(void);
    
     
     /* Select the Card at the given index
@@ -147,7 +144,7 @@ class Ingeldop {
      *   true  if the Card at index i is selected
      *   false if the Card at index i is no selected
      */
-    bool isSelected(uint8_t i);
+    bool isSelected(int i);
    
 
     /* Gets the Card at the specified index.
@@ -163,7 +160,7 @@ class Ingeldop {
      *   is larger than the current
      *   size of the hand.
      */
-    Card cardAt(uint8_t i);
+    Card cardAt(int i);
     
     
     /* Test if there are any possible discards left.
@@ -171,10 +168,19 @@ class Ingeldop {
      */
     bool gameOver(void);
 
- private:
-    vector<Card> deck;
-    deque<bool>  selected;
-    deque<Card>  hand;
+    Card popDeck();  // pop top card from deck
+    void pushHand(Card c, bool s);  // push card/sel onto top of hand
+    void delHand(uint8_t i);        // remove specific card from hand
+    
+    /**
+     * 
+     */
+    Card deck[52];
+    Card hand[52];
+    bool sel[52];
+    int numSel;
+    int deckSize;
+    int handSize;
 };
 
 

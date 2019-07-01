@@ -10,163 +10,176 @@
 
 #include "Ingeldop.hpp"
 
+#include <iostream>
 using std::vector;
+using std::cout;
+using std::endl;
 
-Ingeldop::Ingeldop(const vector<Card>& seedDeck) {
-    this->deck = vector<Card>(seedDeck);
+Ingeldop::Ingeldop(Card seedDeck[], int seedSize) {
+    this->deckSize = 0;
+    for (int i = 0; i < seedSize; i++) {
+        this->deck[i] = seedDeck[i];
+        this->deckSize++;
+    }
 }
 
 Ingeldop::Ingeldop() {
 
     // Default un-shuffled deck
-    deck = {CLUB_A,  DIAMOND_A,  HEART_A,  SPADE_A,
-            CLUB_2,  DIAMOND_2,  HEART_2,  SPADE_2,
-            CLUB_3,  DIAMOND_3,  HEART_3,  SPADE_3,
-            CLUB_4,  DIAMOND_4,  HEART_4,  SPADE_4,
-            CLUB_5,  DIAMOND_5,  HEART_5,  SPADE_5,
-            CLUB_6,  DIAMOND_6,  HEART_6,  SPADE_6,
-            CLUB_7,  DIAMOND_7,  HEART_7,  SPADE_7,
-            CLUB_8,  DIAMOND_8,  HEART_8,  SPADE_8,
-            CLUB_9,  DIAMOND_9,  HEART_9,  SPADE_9,
-            CLUB_10, DIAMOND_10, HEART_10, SPADE_10,
-            CLUB_J,  DIAMOND_J,  HEART_J,  SPADE_J,
-            CLUB_Q,  DIAMOND_Q,  HEART_Q,  SPADE_Q,
-            CLUB_K,  DIAMOND_K,  HEART_K,  SPADE_K};
-            
+    vector<Card> tmpDeck = {CLUB_A,  DIAMOND_A,  HEART_A,  SPADE_A,
+                            CLUB_2,  DIAMOND_2,  HEART_2,  SPADE_2,
+                            CLUB_3,  DIAMOND_3,  HEART_3,  SPADE_3,
+                            CLUB_4,  DIAMOND_4,  HEART_4,  SPADE_4,
+                            CLUB_5,  DIAMOND_5,  HEART_5,  SPADE_5,
+                            CLUB_6,  DIAMOND_6,  HEART_6,  SPADE_6,
+                            CLUB_7,  DIAMOND_7,  HEART_7,  SPADE_7,
+                            CLUB_8,  DIAMOND_8,  HEART_8,  SPADE_8,
+                            CLUB_9,  DIAMOND_9,  HEART_9,  SPADE_9,
+                            CLUB_10, DIAMOND_10, HEART_10, SPADE_10,
+                            CLUB_J,  DIAMOND_J,  HEART_J,  SPADE_J,
+                            CLUB_Q,  DIAMOND_Q,  HEART_Q,  SPADE_Q,
+                            CLUB_K,  DIAMOND_K,  HEART_K,  SPADE_K};
+
     // Shuffle deck
     std::random_device rd;
     std::mt19937 g(rd());
-    std::shuffle(deck.begin(), deck.end(), g);
+    std::shuffle(tmpDeck.begin(), tmpDeck.end(), g);
+   
+    // Copy to deck
+    this->deckSize = 0;
+    for (int i = 0; i < tmpDeck.size(); i++) {
+        this->deck[i] = tmpDeck[i];
+        this->deckSize++;
+    }
 }
-
 
 void Ingeldop::deal() {
-    if (this->deck.empty()) {
-        hand.push_front(hand.back());
-        hand.pop_back();
-        selected.push_front(selected.back());
-        selected.pop_back();
+    if (this->getDeckSize() != 0) {
+        Card c = this->deck[--this->deckSize];  // Get Card from deck
+        this->hand[this->handSize] = c;         // Stick it in hand
+        this->sel[this->handSize] = false;      // Set not selected
+        this->handSize++;                       // Update hand size
     } else {
-        hand.push_front(deck.back());
-        selected.push_front(false);
-        deck.pop_back();
-    }
-}
-
-
-void Ingeldop::discard() {
-
-    // TODO: add numSelected member
-    int numSelected = count(this->selected.begin(),
-                            this->selected.end(),
-                            true);
-    if (numSelected == 4 &&
-        isSelected(0) &&
-        isSelected(1) &&
-        isSelected(2) &&
-        isSelected(3) &&
-        suit(cardAt(0)) == suit(cardAt(1)) &&
-        suit(cardAt(0)) == suit(cardAt(2)) &&
-        suit(cardAt(0)) == suit(cardAt(3))) {
-
-        hand.erase(hand.begin()+3);
-        hand.erase(hand.begin()+2);
-        hand.erase(hand.begin()+1);
-        hand.erase(hand.begin()+0);
-        selected.erase(selected.begin()+3);
-        selected.erase(selected.begin()+2);
-        selected.erase(selected.begin()+1);
-        selected.erase(selected.begin()+0);
+        // Save Card and selection
+        Card c = this->hand[0];
+        bool s = this->sel[0];
         
-        return;
+        // Shift hand
+        for (int i = 0; i < this->handSize-1; i++) {
+            this->hand[i] = this->hand[i+1];
+            this->sel[i] = this->sel[i+1];
+        }
+
+        // Stick Card and selection back in hand
+        this->hand[this->handSize-1] = c;
+        this->sel[this->handSize-1] = s;
     }
-    
-    if (numSelected == 2 &&
-        isSelected(0) &&
-        isSelected(1) &&
-        rank(cardAt(0)) == rank(cardAt(1))) {
-
-        hand.erase(hand.begin()+1);
-        hand.erase(hand.begin()+0);
-        selected.erase(selected.begin()+1);
-        selected.erase(selected.begin()+0);
-
-        return;
-    }
-    
-    if (numSelected == 2 &&
-        this->handSize() >= 3 &&
-        isSelected(1) &&
-        isSelected(2) &&
-        rank(cardAt(0)) == rank(cardAt(3))) {
-
-        hand.erase(hand.begin()+2);
-        hand.erase(hand.begin()+1);
-        selected.erase(selected.begin()+2);
-        selected.erase(selected.begin()+1);
-
-        return;
-    } 
-    
-    if (numSelected == 2 &&
-        this->handSize() >= 3 &&
-        isSelected(1) &&
-        isSelected(2) &&
-        suit(cardAt(0)) == suit(cardAt(3))) {
-
-        hand.erase(hand.begin()+2);
-        hand.erase(hand.begin()+1);
-        selected.erase(selected.begin()+2);
-        selected.erase(selected.begin()+1);
-
-        return;
-    }
-
-    throw discardException();
 }
 
 
-Card Ingeldop::cardAt(uint8_t i) {
-    return this->hand.at(i);
+bool Ingeldop::discard() {
+
+    // Get indices of top four cards
+    int i0 = this->handSize - 1;
+    int i1 = this->handSize - 2;
+    int i2 = this->handSize - 3;
+    int i3 = this->handSize - 4;
+
+    // Get card selection masks
+    bool sel_1111 =  isSelected(i0) && isSelected(i1) &&  isSelected(i2) &&  isSelected(i3);
+    bool sel_1100 =  isSelected(i0) && isSelected(i1) && !isSelected(i2) && !isSelected(i3);
+    bool sel_0110 = !isSelected(i0) && isSelected(i1) &&  isSelected(i2) && !isSelected(i3);
+   
+    // Get card matching masks
+    bool suit_1111 = suit(cardAt(i0)) == suit(cardAt(i1)) &&
+                     suit(cardAt(i0)) == suit(cardAt(i2)) &&
+                     suit(cardAt(i0)) == suit(cardAt(i3));
+    bool suit_1001 = suit(cardAt(i0)) == suit(cardAt(i3));
+    bool rank_1001 = rank(cardAt(i0)) == rank(cardAt(i3));
+    bool rank_1100 = rank(cardAt(i0)) == rank(cardAt(i1));
+   
+    // Discard
+    if (numSel == 4 && sel_1111 && suit_1111) {
+        this->handSize -= 4;
+        this->numSel   -= 4;
+        return true;
+    }
+    
+    if (numSel == 2 && sel_1100 && rank_1100) {
+        this->handSize -= 2;
+        this->numSel   -= 2;
+        return true;
+    }
+    
+    if (numSel == 2 && handSize >= 3 && sel_0110 && (rank_1001 || suit_1001)) {
+        this->hand[i2] = this->hand[i0];
+        this->sel[i2]  = this->sel[i0];
+        this->handSize -= 2;
+        this->numSel   -= 2;
+        return true;
+    } 
+    return false;    
+}
+
+
+Card Ingeldop::cardAt(int i) {
+    if (0 <= i && i < this->handSize) {
+        return this->hand[i];
+    } else {
+        return ERR_NOCARD;
+    }
 }
 
 
 void Ingeldop::select(uint8_t i, bool sel) {
-    this->selected.at(i) = sel;
+    if (i >= this->handSize) {
+        throw std::out_of_range ("blah");
+    } else {
+        if (sel && !this->sel[i]) {
+            this->numSel++;
+        } else if (!sel && this->sel[i]) {
+            this->numSel--;
+        }
+        this->sel[i] = sel;
+    }
 }
 
 
-bool Ingeldop::isSelected(uint8_t i) {
-    return this->selected.at(i);
+bool Ingeldop::isSelected(int i) {
+    if (0 <= i && i < this->handSize) {
+        return this->sel[i];
+    } else {
+        return false;
+    }
 }
     
-uint8_t Ingeldop::handSize() {
-    return this->hand.size();
+uint8_t Ingeldop::getHandSize() {
+    return this->handSize;
 }
 
-uint8_t Ingeldop::deckSize() {
-    return this->deck.size();
+uint8_t Ingeldop::getDeckSize() {
+    return this->deckSize;
 }
 
 
 bool Ingeldop::gameOver() {
     // Never over if still cards in deck
-    if (this->deckSize() != 0) return false;
+    if (deckSize != 0) return false;
 
-    for (int i = 0; i < this->handSize(); i++) {
-        int i0 = (i+0) % this->handSize();
-        int i1 = (i+1) % this->handSize();
-        int i2 = (i+2) % this->handSize();
-        int i3 = (i+3) % this->handSize();
+    for (int i = 0; i < handSize; i++) {
+        int i0 = (i+0) % handSize;
+        int i1 = (i+1) % handSize;
+        int i2 = (i+2) % handSize;
+        int i3 = (i+3) % handSize;
 
-        Card c0 = this->cardAt(i0);
-        Card c1 = this->cardAt(i1);
-        Card c2 = this->cardAt(i2);
-        Card c3 = this->cardAt(i3);
+        Card c0 = cardAt(i0);
+        Card c1 = cardAt(i1);
+        Card c2 = cardAt(i2);
+        Card c3 = cardAt(i3);
 
-        if (this->handSize() >= 2 && rank(c0) == rank(c1)) return false; // Check for pairs
-        if (this->handSize() >= 4 && rank(c0) == rank(c3)) return false; // Check between pairs
-        if (this->handSize() >= 4 && suit(c0) == suit(c3)) return false; // Check between suits
+        if (handSize >= 2 && rank(c0) == rank(c1)) return false; // Check for pairs
+        if (handSize >= 4 && rank(c0) == rank(c3)) return false; // Check between pairs
+        if (handSize >= 4 && suit(c0) == suit(c3)) return false; // Check between suits
     }
 
     return true;
