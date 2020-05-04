@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.brycekellogg.ingeldop.HandView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
-</com.brycekellogg.ingeldop.HandView>
+    <ImageButton
+        android:id="@+id/dealButton"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:padding="0dp"
+        android:layout_marginLeft="@dimen/leftMargin"
+        android:layout_marginTop="@dimen/topMargin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        android:scaleType="fitCenter"
+        android:src="@drawable/deal0" />
+
+    <Button
+        android:id="@+id/discardButton"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="@dimen/leftMargin"
+        android:layout_marginRight="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dealButton"
+        app:layout_constraintRight_toRightOf="@id/dealButton"
+
+        android:text="@string/discardText" />
+
+    <!--
+        - Set layout width and height to 0dp so they expand to constraints
+        -
+    -->
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:background="@color/background"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/topScrollMargin"
+        android:layout_marginRight="@dimen/rightScrollMargin"
+
+        android:layout_marginLeft="32dp"
+        android:layout_marginBottom="0dp"
+
+
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarSize="10dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/dealButton"
+        app:layout_constraintLeft_toRightOf="@+id/dealButton"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.brycekellogg.ingeldop.HandViewExpanded
+            android:id="@+id/handView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </HorizontalScrollView>
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@color/background"
+
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/discardButton"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

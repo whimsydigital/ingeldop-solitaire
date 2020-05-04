@@ -6,10 +6,21 @@
  */
 package com.brycekellogg.ingeldop;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.*;
 
 public class Ingeldop {
-
+    /**
+     *
+     */
+    private List<Card> deck;
+    private List<Card> hand;
+    private List<Boolean> sel;
 
     /**
      * 
@@ -121,8 +132,7 @@ public class Ingeldop {
     }
 
 
-    /**
-     * Attempts to discard cards from the hand.
+    /* Attempts to discard cards from the hand.
      *
      * Cards can be discarded from the hand if they
      * match certain criteria. If these criteria are
@@ -133,12 +143,15 @@ public class Ingeldop {
      *   - Cards must be selected before they can be discarded
      *   - Only 2 or 4 cards can be discarded at a time
      *   - Only cards in the top 4 of the hand can be discarded
-     *   - Selected cards must match a valid discard patter:
+     *   - Selected cards must match a valid discard pattern:
      *       a) top 4 cards flush
      *       b) top 2 cards pair
-     *       c) any two cards (in positions 2 and 3) seperating a pair
-     *       d) any two cards (in positions 2 and 3) seperating same suit
-     */
+     *       c) any two cards (in positions 2 and 3) separating a pair
+     *       d) any two cards (in positions 2 and 3) separating same suit
+     *
+     * A consecutive discard without an intervening deal is only
+     * allowed once after a discard of types c & d, but only if
+     * the second discard is of type a or b.  */
     void discard() throws DiscardException {
 
         // Get num selected
@@ -228,12 +241,9 @@ public class Ingeldop {
     }
 
 
-    /**
-     * Test if there are any more possible moves.
-     *
-     * If there are cars remaining in the deck, or if it is
-     * possible to make a valid call to discard()
-     */
+    /* Test if there are any more possible moves. A game counts as over if
+     * there are no cards remaining in the deck and if it is not possible
+     * to make a valid call to discard() after any number of deals.  */
     boolean gameOver() {
         // Never over if still cards in deck
         if (deckSize() != 0) return false;
@@ -254,16 +264,75 @@ public class Ingeldop {
             if (handSize() >= 4 && c0.suit == c3.suit) return false; // Check between suits
         }
 
+        // No possible discards left
         return true;
     }
 
 
-    /**
-     * 
-     */
-    private List<Card> deck;
-    private List<Card> hand;
-    private List<Boolean> sel;
+    /* Convert an Ingeldop game into a serialized JSON object of the form:
+     *           {"deck": ["HEART_7", ...],
+     *            "hand": ["SPADE_K", ...],
+     *            "sel":  [false, ...] }
+     * This contains all the internal information needed to restore an
+     * Ingeldop game from a saved or serialized state. Use fromJSON() to
+     * convert a JSON object of this format into an Ingeldop game.  */
+    public JSONObject toJSON() throws JSONException {
+        // Convert deck to JSON array
+        JSONArray jsonDeck = new JSONArray();
+        for (Card c : this.deck) {
+            jsonDeck.put(c.toString());
+        }
+
+        // Convert hand to JSON array
+        JSONArray  jsonHand  = new JSONArray();
+        for (Card c : this.hand) {
+            jsonHand.put(c.toString());
+        }
+
+        // Convert selection mask to JSON array
+        JSONArray jsonSel = new JSONArray();
+        for (boolean s : this.sel) {
+            jsonSel.put(s);
+        }
+
+        // Save all the JSON arrays into a JSON object
+        JSONObject jsonGame = new JSONObject();
+        jsonGame.put("deck", jsonDeck);
+        jsonGame.put("hand", jsonHand);
+        jsonGame.put("sel", jsonSel);
+        return jsonGame;
+    }
+
+    static public Ingeldop fromJSON(JSONObject json) {
+
+        try {
+            JSONArray jsonDeck = json.getJSONArray("deck");
+            JSONArray jsonHand = json.getJSONArray("hand");
+            JSONArray jsonSel = json.getJSONArray("sel");
+
+            Card[] seedDeck = new Card[jsonDeck.length()];
+            for (int i = 0; i < jsonDeck.length(); i++) {
+                seedDeck[i] = Card.valueOf(jsonDeck.getString(i));
+            }
+
+            Card[] seedHand = new Card[jsonHand.length()];
+            for (int i = 0; i < jsonHand.length(); i++) {
+                seedHand[i] = Card.valueOf(jsonHand.getString(i));
+            }
+
+            Ingeldop game = new Ingeldop(seedDeck, seedHand);
+
+            for (int i = 0; i < jsonSel.length(); i++) {
+                game.selectCard(i, jsonSel.getBoolean(i));
+            }
+
+            return game;
+        } catch (JSONException e) {
+            Log.e("fromJSON", e.getMessage(), e);
+            return new Ingeldop();
+        }
+    }
+
 }
 
 /**
@@ -275,8 +344,14 @@ class DiscardException extends Exception {
     }
 }
 
+/* Representations of Cards and Suits.
+ *
+ * These are represented as Java enums, with a Card consisting
+ * of a suit and a rank. A rank is an integer that maps ace = 1
+ * to king = 13, while a suit is an enum consisting of the
+ * four suit values. These representations can be converted
+ * to a from strings using the enum toString() and valueOf(). */
 enum Suit {CLUBS, DIAMONDS, HEARTS, SPADES}
-
 enum Card {
     CLUB_A   (Suit.CLUBS, 1),   DIAMOND_A  (Suit.DIAMONDS, 1),
     CLUB_2   (Suit.CLUBS, 2),   DIAMOND_2  (Suit.DIAMONDS, 2),

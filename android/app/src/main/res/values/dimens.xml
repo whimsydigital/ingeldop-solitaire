@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
-    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="leftMargin">32dp</dimen>
+    <dimen name="topMargin">32dp</dimen>
+
+    <!-- Margins for the scroll view. These are different from the
+         normal margins because the cards move within the scroll view.
+         When selected, the cards should move up by the difference
+         between the topScrollMargin and the topMargin. Making the
+         right margin of the scroll view small allows the cards in
+         the hand to appear to be going off screen to the right. -->
+    <dimen name="topScrollMargin">0dp</dimen>
+    <dimen name="rightScrollMargin">0dp</dimen>
+
+    <!-- Card source height is dependent on the sprite sheet being used
+         for source images. It refers to the number of image pixels each
+         card is in the source sprite sheet. This will probably need to
+         be moved to a style that depends on the card set being used.-->
+    <dimen name="cardSrcHeight">100px</dimen>
+    <dimen name="cardSrcWidth">72px</dimen>
+
+    <!-- Default card destination size is based on standard playing card
+         sizes. These sizes will be scaled using a scaling parameter.
+         The default scaling parameter will make them fit the device,
+         but can be customized using the zoom buttons. -->
+    <dimen name="defaultCardDstHeight">89mm</dimen>
+    <dimen name="defaultCardDstWidth">64mm</dimen>
+
+    <integer name="rowHearts">0</integer>
+    <integer name="rowDiamonds">1</integer>
+    <integer name="rowClubs">2</integer>
+    <integer name="rowSpades">3</integer>
+
+    <integer name="zoomPercent">25</integer>
 
 </resources>
