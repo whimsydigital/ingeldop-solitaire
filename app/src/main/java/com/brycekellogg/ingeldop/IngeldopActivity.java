@@ -32,19 +32,7 @@ public class IngeldopActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-
-
-
         setContentView(R.layout.gamelayout);
-
-
-
-
-        // Set deal button on click action
-        ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-        dealButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { deal(); }
-        });
 
         // Set discard button on click action
         Button discardButton = (Button) findViewById(R.id.discardButton);
@@ -92,34 +80,6 @@ public class IngeldopActivity extends AppCompatActivity {
         Bitmap dealImage = BitmapFactory.decodeResource(getResources(), R.drawable.deal0);
         ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
         dealButton.setImageBitmap(dealImage);
-
-        // Redraw the hand view
-        findViewById(R.id.handView).requestLayout();
-        findViewById(R.id.handView).invalidate();
-    }
-
-
-    /* Processes a card deal action. We deal a card, update the deal button image if the
-     * deck is now empty or if the game is over, and then request a redraw of the hand view.
-     * Additionally, displays a notification if the game is over. */
-    void deal() {
-        // Do the deal
-        game.deal();
-
-        // If deck is empty, change deal button image
-        if (game.deckSize() == 0) {
-            Bitmap dealImage = BitmapFactory.decodeResource(getResources(), R.drawable.deal1);
-            ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-            dealButton.setImageBitmap(dealImage);
-        }
-
-        // If game is over, change deal button image and display alert
-        if (game.gameOver()) {
-            Bitmap dealImage = BitmapFactory.decodeResource(getResources(), R.drawable.deal2);
-            ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-            dealButton.setImageBitmap(dealImage);
-            Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_SHORT).show();
-        }
 
         // Redraw the hand view
         findViewById(R.id.handView).requestLayout();
