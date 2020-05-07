@@ -76,10 +76,10 @@ public class IngeldopActivity extends AppCompatActivity {
         // Start a new game
         this.game = new Ingeldop();
 
-        // Set deal button image to deck
-        Bitmap dealImage = BitmapFactory.decodeResource(getResources(), R.drawable.deal0);
-        ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-        dealButton.setImageBitmap(dealImage);
+        // Reset deal button state
+        DealButton dealButton = (DealButton) findViewById(R.id.dealButton);
+        dealButton.setEmpty(false);
+        dealButton.setEnabled(true);
 
         // Redraw the hand view
         findViewById(R.id.handView).requestLayout();

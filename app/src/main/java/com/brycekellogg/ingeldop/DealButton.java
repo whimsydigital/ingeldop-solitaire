@@ -16,6 +16,7 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
         this.setOnClickListener(this);
     }
 
+
     /* Create a custom button state for when the deck is empty. This allows us
      * to set custom drawables for this button depending on an empty state.
      * This logic doesn't directly deal with the deck itself, instead just
@@ -28,7 +29,11 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
     }
     private boolean isEmpty = false;
     private static final int[] STATE_EMPTY = {R.attr.state_empty};
-    public void setEmpty(boolean isEmpty) {this.isEmpty = isEmpty;}
+    public void setEmpty(boolean isEmpty) {
+        this.isEmpty = isEmpty;
+        refreshDrawableState();
+    }
+
 
     /* Processes a dealButton onClick action. We deal a card and update the button
      * state based on if the deck is empty or if the game is over. If the deck is
