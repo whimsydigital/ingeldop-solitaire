@@ -123,12 +123,6 @@ public class IngeldopActivity extends AppCompatActivity {
         // Update layout
         findViewById(R.id.layout).requestLayout();
         findViewById(R.id.layout).invalidate();
-
-        // Update discard button text size
-        Button discardButton = (Button) findViewById(R.id.discardButton);
-        discardButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40.0F*(zoomPercent/100.0F));
-        findViewById(R.id.discardButton).requestLayout();
-        findViewById(R.id.discardButton).invalidate();
     }
 
     void saveState() {

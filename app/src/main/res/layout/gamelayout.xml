@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:compat="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="RtlHardcoded"
     android:id="@+id/layout"
@@ -18,8 +18,8 @@
         android:padding="0dp"
         android:layout_marginLeft="@dimen/leftMargin"
         android:layout_marginTop="@dimen/topMargin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        compat:layout_constraintLeft_toLeftOf="parent"
+        compat:layout_constraintTop_toTopOf="parent"
 
         android:scaleType="fitCenter"
         android:src="@drawable/dealbutton" />
@@ -29,12 +29,16 @@
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
+        compat:autoSizeTextType="uniform"
+        compat:autoSizeMinTextSize="3sp"
+        compat:autoSizeMaxTextSize="200sp"
+        android:maxLines="1"
+        
         android:layout_marginLeft="@dimen/leftMargin"
         android:layout_marginRight="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dealButton"
-        app:layout_constraintRight_toRightOf="@id/dealButton"
+        compat:layout_constraintLeft_toLeftOf="parent"
+        compat:layout_constraintTop_toBottomOf="@id/dealButton"
+        compat:layout_constraintRight_toRightOf="@id/dealButton"
 
         android:text="@string/discardText" />
 
@@ -59,10 +63,10 @@
         android:scrollbarFadeDuration="0"
         android:scrollbarSize="10dp"
 
-        app:layout_constraintBottom_toBottomOf="@+id/dealButton"
-        app:layout_constraintLeft_toRightOf="@+id/dealButton"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        compat:layout_constraintBottom_toBottomOf="@+id/dealButton"
+        compat:layout_constraintLeft_toRightOf="@+id/dealButton"
+        compat:layout_constraintRight_toRightOf="parent"
+        compat:layout_constraintTop_toTopOf="parent">
 
         <com.brycekellogg.ingeldop.HandViewExpanded
             android:id="@+id/handView"
@@ -84,9 +88,9 @@
         android:theme="?attr/actionBarTheme"
 
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/discardButton"
-        app:layout_constraintRight_toRightOf="parent" />
+        compat:layout_constraintBottom_toBottomOf="parent"
+        compat:layout_constraintLeft_toRightOf="@id/discardButton"
+        compat:layout_constraintRight_toRightOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
