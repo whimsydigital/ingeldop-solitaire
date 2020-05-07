@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Ingeldop</string>
     <string name="discardText">Discard</string>
+    <string name="newGameText">New</string>
+    <string name="zoomInText">Zoom In</string>
+    <string name="zoomOutText">Zoom Out</string>
+    <string name="statsText">Stats</string>
+    <string name="settingsText">Settings</string>
 </resources>
