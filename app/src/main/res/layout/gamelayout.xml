@@ -22,9 +22,10 @@
         compat:layout_constraintTop_toTopOf="parent"
 
         android:scaleType="fitCenter"
-        android:src="@drawable/dealbutton" />
+        android:src="@drawable/dealbutton"
+        android:rotation="0"/>
 
-    <Button
+    <com.brycekellogg.ingeldop.DiscardButton
         android:id="@+id/discardButton"
 
         android:layout_width="0dp"
@@ -33,7 +34,7 @@
         compat:autoSizeMinTextSize="3sp"
         compat:autoSizeMaxTextSize="200sp"
         android:maxLines="1"
-        
+
         android:layout_marginLeft="@dimen/leftMargin"
         android:layout_marginRight="0dp"
         compat:layout_constraintLeft_toLeftOf="parent"

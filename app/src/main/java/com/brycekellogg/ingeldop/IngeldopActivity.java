@@ -34,12 +34,6 @@ public class IngeldopActivity extends AppCompatActivity {
         super.onCreate(state);
         setContentView(R.layout.gamelayout);
 
-        // Set discard button on click action
-        Button discardButton = (Button) findViewById(R.id.discardButton);
-        discardButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { discard(); }
-        });
-
         // Setup toolbar actions
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu);
@@ -84,34 +78,6 @@ public class IngeldopActivity extends AppCompatActivity {
         // Redraw the hand view
         findViewById(R.id.handView).requestLayout();
         findViewById(R.id.handView).invalidate();
-    }
-
-
-    /* Process a discard action. We attempt to discard the selected cards, but if a discard
-     * is not allowed due to currently selected cards, an error pop-up is displayed. If a
-     * discard is allowed, the selected cards are discarded, we potentially update the
-     * deal button image if the game is over, and request a redraw of the hand view. If
-     * the game is over, we additionally display a popup notification. */
-    public void discard() {
-        try {
-            // Do the discard
-            game.discard();
-
-            // If game is over, change deal button image and display alert
-            if (game.gameOver()) {
-                ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-                dealButton.setEnabled(false);
-                Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_SHORT).show();
-            }
-
-            // Redraw the hand view
-            findViewById(R.id.handView).requestLayout();
-            findViewById(R.id.handView).invalidate();
-
-        } catch (DiscardException e) {
-            // Couldn't discard, show a notification
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
 
