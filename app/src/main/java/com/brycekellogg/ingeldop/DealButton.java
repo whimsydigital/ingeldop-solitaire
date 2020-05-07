@@ -62,4 +62,14 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
         ((IngeldopActivity)getContext()).findViewById(R.id.handView).requestLayout();
         ((IngeldopActivity)getContext()).findViewById(R.id.handView).invalidate();
     }
+
+    public void setScale(double scale) {
+        // Get resources
+        int defaultCardWidth  = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstWidth);
+        int defaultCardHeight = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstHeight);
+
+        // Set deal button size
+        getLayoutParams().height = (int) (defaultCardHeight*scale);
+        getLayoutParams().width  = (int) (defaultCardWidth*scale);
+    }
 }

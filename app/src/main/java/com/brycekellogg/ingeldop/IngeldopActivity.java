@@ -116,14 +116,9 @@ public class IngeldopActivity extends AppCompatActivity {
 
 
     void zoom(int zoomPercent) {
-        // Get resources
-        int defaultCardWidth  = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstWidth);
-        int defaultCardHeight = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstHeight);
-        ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-
-        // Set deal button size
-        dealButton.getLayoutParams().height = (int) (defaultCardHeight*(zoomPercent/100.0));
-        dealButton.getLayoutParams().width  = (int) (defaultCardWidth*(zoomPercent/100.0));
+        // Set deal button scale
+        DealButton dealButton = (DealButton) findViewById(R.id.dealButton);
+        dealButton.setScale(zoomPercent/100.0);
 
         // Update layout
         findViewById(R.id.layout).requestLayout();
