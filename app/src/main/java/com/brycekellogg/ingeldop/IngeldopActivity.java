@@ -46,9 +46,9 @@ public class IngeldopActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.newgame:  newGame();          break;
-                    case R.id.zoomin:   zoom(++zoomPercent); break;
-                    case R.id.zoomout:  zoom(--zoomPercent); break;
+                    case R.id.newGame:  newGame();          break;
+                    case R.id.zoomIn:   zoom(++zoomPercent); break;
+                    case R.id.zoomOut:  zoom(--zoomPercent); break;
                     case R.id.stats:    break;
                     case R.id.settings: break;
                 }
