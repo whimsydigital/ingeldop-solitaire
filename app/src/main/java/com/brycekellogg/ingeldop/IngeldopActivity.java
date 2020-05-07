@@ -92,16 +92,15 @@ public class IngeldopActivity extends AppCompatActivity {
      * discard is allowed, the selected cards are discarded, we potentially update the
      * deal button image if the game is over, and request a redraw of the hand view. If
      * the game is over, we additionally display a popup notification. */
-    void discard() {
+    public void discard() {
         try {
             // Do the discard
             game.discard();
 
             // If game is over, change deal button image and display alert
             if (game.gameOver()) {
-                Bitmap dealImage = BitmapFactory.decodeResource(getResources(), R.drawable.deal2);
                 ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-                dealButton.setImageBitmap(dealImage);
+                dealButton.setEnabled(false);
                 Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_SHORT).show();
             }
 
