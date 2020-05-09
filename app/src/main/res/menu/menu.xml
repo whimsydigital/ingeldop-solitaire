@@ -4,28 +4,28 @@
       xmlns:compat="http://schemas.android.com/apk/res-auto"
       tools:ignore="AlwaysShowAction">
     <item android:id="@+id/newGame"
-          android:icon="@drawable/baseline_autorenew_black_48"
+          android:icon="@drawable/icon_autorenew"
           android:title="@string/newGameText"
           compat:showAsAction="always"/>
 
     <item android:id="@+id/zoomIn"
-          android:icon="@drawable/baseline_zoom_in_black_48"
+          android:icon="@drawable/icon_zoomin"
           android:title="@string/zoomInText"
           compat:showAsAction="always"/>
 
     <item android:id="@+id/zoomOut"
-          android:icon="@drawable/baseline_zoom_out_black_48"
+          android:icon="@drawable/icon_zoomout"
           android:title="@string/zoomOutText"
           compat:showAsAction="always"/>
 
     <item android:id="@+id/stats"
-          android:icon="@drawable/baseline_trending_up_black_48"
+          android:icon="@drawable/icon_stats"
           android:title="@string/statsText"
           android:iconTint="@color/disabled"
           compat:showAsAction="always"/>
 
     <item android:id="@+id/settings"
-          android:icon="@drawable/baseline_settings_black_48"
+          android:icon="@drawable/icon_settings"
           android:title="@string/settingsText"
           android:iconTint="@color/disabled"
           compat:showAsAction="always"/>
