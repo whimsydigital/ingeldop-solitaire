@@ -8,11 +8,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class DiscardButton extends AppCompatButton implements View.OnClickListener {
+
     public DiscardButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        // We are our own click listener
-        this.setOnClickListener(this);
+        this.setOnClickListener(this);  // We are our own click listener
     }
 
     /* Process a discard action. We attempt to discard the selected cards, but if a discard
@@ -30,14 +29,11 @@ public class DiscardButton extends AppCompatButton implements View.OnClickListen
 
             // If game is over, change deal button image and display alert
             if (game.gameOver()) {
-                ImageButton dealButton = (ImageButton) findViewById(R.id.dealButton);
-                dealButton.setEnabled(false);
-                Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
+                ((IngeldopActivity)getContext()).findViewById(R.id.dealButton).setEnabled(false);
             }
 
-            // Redraw the hand view
-            ((IngeldopActivity)getContext()).findViewById(R.id.handView).requestLayout();
-            ((IngeldopActivity)getContext()).findViewById(R.id.handView).invalidate();
+            // Update activity
+            ((IngeldopActivity) getContext()).update();
 
         } catch (DiscardException e) {
             // Couldn't discard, show a notification

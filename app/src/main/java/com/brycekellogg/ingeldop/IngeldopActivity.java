@@ -1,15 +1,10 @@
 package com.brycekellogg.ingeldop;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -27,7 +22,7 @@ import java.util.Scanner;
  * errors, settings, and stats.  */
 public class IngeldopActivity extends AppCompatActivity {
     public Ingeldop game;
-    public int zoomPercent;
+    public double scale;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -41,8 +36,8 @@ public class IngeldopActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.newGame:  newGame();          break;
-                    case R.id.zoomIn:   zoom(++zoomPercent); break;
-                    case R.id.zoomOut:  zoom(--zoomPercent); break;
+                    case R.id.zoomIn:   scale += 0.2; findViewById(R.id.dealButton).requestLayout(); break;
+                    case R.id.zoomOut:  scale -= 0.2; findViewById(R.id.dealButton).requestLayout(); break;
                     case R.id.stats:    break;
                     case R.id.settings: break;
                 }
@@ -53,14 +48,15 @@ public class IngeldopActivity extends AppCompatActivity {
 
         // Try to load saved state
         restoreState();
-        Log.i("zoom", Integer.toString(this.zoomPercent));
-        Log.i("handSize", Integer.toString(this.game.handSize()));
 
         // Update layout
         findViewById(R.id.layout).requestLayout();
-        findViewById(R.id.layout).invalidate();
         findViewById(R.id.handView).requestLayout();
-        findViewById(R.id.handView).invalidate();
+    }
+
+    public void update() {
+        findViewById(R.id.handView).requestLayout();
+        if (game.gameOver()) Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -81,21 +77,11 @@ public class IngeldopActivity extends AppCompatActivity {
     }
 
 
-    void zoom(int zoomPercent) {
-        // Set deal button scale
-        DealButton dealButton = (DealButton) findViewById(R.id.dealButton);
-        dealButton.setScale(zoomPercent/100.0);
-
-        // Update layout
-        findViewById(R.id.layout).requestLayout();
-        findViewById(R.id.layout).invalidate();
-    }
-
     void saveState() {
         // Serialize current state to JSON
         JSONObject state = new JSONObject();
         try {
-            state.put("zoom", this.zoomPercent);
+            state.put("zoom", this.scale);
             state.put("game", this.game.toJSON());
             Log.i("SaveState", state.toString());
         } catch (JSONException e) {
@@ -128,16 +114,16 @@ public class IngeldopActivity extends AppCompatActivity {
             // Convert to JSON and restore
             JSONObject state = new JSONObject(string.toString());
             this.game = Ingeldop.fromJSON(state.getJSONObject("game"));
-            this.zoomPercent = state.getInt("zoom");
-            zoom(zoomPercent);
+            this.scale = 1; //state.getDouble("zoom");
+            findViewById(R.id.dealButton).requestLayout();;
 
 
             Log.i("restoreState", string.toString());
         } catch (FileNotFoundException | JSONException e) {
             Log.i("restoreState", "ignoring state - EXCEPTION");
             newGame();
-            zoomPercent = 15;
-            zoom(zoomPercent);
+            scale = 1;
+            findViewById(R.id.dealButton).requestLayout();
         }
     }
 
