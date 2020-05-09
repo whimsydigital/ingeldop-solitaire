@@ -12,6 +12,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".IngeldopActivity"
                   android:screenOrientation="landscape"
+                  android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
                   tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
