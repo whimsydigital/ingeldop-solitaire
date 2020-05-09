@@ -1,14 +1,15 @@
 package com.brycekellogg.ingeldop;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A View for a hand of cards that does not collapse
@@ -19,63 +20,38 @@ import android.view.View;
  * is no action taken to constrain hand view width.
  */
 public class HandViewExpanded extends View {
-    private Bitmap spritesheet;
-    private Rect srcRect;
-    private Rect dstRect;
+    private Map<Card, Drawable> spritesheet;
+    private Rect dstRect = new Rect();
 
     private double overlap = 0.8;
 
     public HandViewExpanded(Context context, AttributeSet attrs) {
         super(context, attrs);
-        dstRect = new Rect();
-        srcRect = new Rect();
 
-        // Import card images spritesheet from resources
-        spritesheet = BitmapFactory.decodeResource(this.getResources(), R.drawable.carddeck);
-    }
-
-    /* Calculate source rect for extracting the corresponding card from the spritesheet.
-     * It is assumed that the spritesheet is organized in a series of rows and columns,
-     * where each suit has its own column and cards are organized in ascending order from
-     * left to right with ace being the lowest (left most) card. Which row corresponds to
-     * which suit is defined in the resources. The height and width of each card in the
-     * sprite sheet is also defined in the resources. */
-    void setSrcRect(Card card) {
-        // Read in resources
-        int cardHeight  = this.getResources().getDimensionPixelSize(R.dimen.cardSrcHeight);
-        int cardWidth   = this.getResources().getDimensionPixelSize(R.dimen.cardSrcWidth);
-        int rowHearts   = this.getResources().getInteger(R.integer.rowHearts);
-        int rowDiamonds = this.getResources().getInteger(R.integer.rowDiamonds);
-        int rowClubs    = this.getResources().getInteger(R.integer.rowClubs);
-        int rowSpades   = this.getResources().getInteger(R.integer.rowSpades);
-
-        // Set row & column
-        int row = 0;
-        int col = card.rank-1;
-        switch (card.suit) {
-            case HEARTS:   row = rowHearts;   break;
-            case DIAMONDS: row = rowDiamonds; break;
-            case CLUBS:    row = rowClubs;    break;
-            case SPADES:   row = rowSpades;   break;
+        // Import card images from resources and
+        // save them to a map for access in draw
+        spritesheet = new HashMap<Card, Drawable>();
+        for (Card c : Card.values()) {
+            String strCard  = c.toString().toLowerCase();
+            String strType  = "drawable";
+            String strPkg   = getContext().getPackageName();
+            int resourceID  = getResources().getIdentifier(strCard, strType, strPkg);
+            Drawable resImg = getResources().getDrawable(resourceID, null);
+            spritesheet.put(c, resImg);
         }
 
-        // Set rect boundaries
-        srcRect.top    = cardHeight*row;
-        srcRect.bottom = cardHeight*(row+1);
-        srcRect.left   = cardWidth*col;
-        srcRect.right  = cardWidth*(col+1);
     }
 
     /* Calculate the destination rect for where a card in the hand should be placed. This is
        dependent on the natural aspect ratio of a playing card, the current zoom ratio, the
        index of the card in the hand, the size of overlap, and whether or not the card is selected.  */
-    void setDstRect(int i, boolean sel) {
+    Rect setDstRect(int i, boolean sel) {
         // Read in resources
         int topMargin       = this.getResources().getDimensionPixelSize(R.dimen.topMargin);
         int topScrollMargin = this.getResources().getDimensionPixelSize(R.dimen.topScrollMargin);
         int cardHeight = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstHeight);
         int cardWidth  = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstWidth);
-        double zoomPercent = ((IngeldopActivity)getContext()).zoomPercent / 100.0;
+        double zoomPercent = ((IngeldopActivity)getContext()).scale;
 
         // Calculate rect boundaries
         int selMargin  = topMargin - topScrollMargin;
@@ -85,6 +61,8 @@ public class HandViewExpanded extends View {
         dstRect.bottom = topPadding - (sel ? selMargin : 0) + (int) (cardHeight*zoomPercent);
         dstRect.left  = (int) ((i+0)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
         dstRect.right = (int) ((i+1)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
+
+        return dstRect;
     }
 
 
@@ -111,7 +89,6 @@ public class HandViewExpanded extends View {
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -127,10 +104,13 @@ public class HandViewExpanded extends View {
 
         // Iterate through hand and draw each card
         for (int i = 0; i < game.handSize(); i++) {
-            Card c = game.getCard(i);
-            setSrcRect(c);                          // Get card location in spritesheet
-            setDstRect(i, game.isCardSelected(i));  // Get location to place card
-            canvas.drawBitmap(spritesheet, srcRect, dstRect, null);
+            Card c = game.getCard(i);                        // Get the current card
+            Rect r = setDstRect(i, game.isCardSelected(i));  // Get location to place card
+            Drawable d = spritesheet.get(c);                 // Get the drawable for card
+
+            // Draw card
+            d.setBounds(r);
+            d.draw(canvas);
         }
     }
 
