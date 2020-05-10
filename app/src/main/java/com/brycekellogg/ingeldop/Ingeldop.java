@@ -61,6 +61,7 @@ public class Ingeldop {
             Card c = deck.remove(deck.size()-1);
             hand.add(c);
             sel.add(false);
+            dealt = true;
         } else if (0 != handSize()) {
             Card c = hand.remove(0);
             boolean s = sel.remove(0);
