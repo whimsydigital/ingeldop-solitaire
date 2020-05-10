@@ -358,7 +358,7 @@ public class IngeldopTest {
      * This simulatest trying to discard a pair in the middle of the hand.
      * This is not allowed and should throw an exception. **/
     @Test
-    public void discardingpair6() {
+    public void discardingPair7() {
         // Setup game
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.SPADE_2, Card.CLUB_2, Card.HEART_5, Card.SPADE_A, Card.DIAMOND_9};
