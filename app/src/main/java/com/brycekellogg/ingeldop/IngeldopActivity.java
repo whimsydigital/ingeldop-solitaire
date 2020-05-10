@@ -2,13 +2,10 @@ package com.brycekellogg.ingeldop;
 
 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,6 +68,26 @@ public class IngeldopActivity extends AppCompatActivity {
         return scale;
     }
 
+    public void updateScaleMenu() {
+        // Load scale values
+        double minScale = Double.parseDouble(getString(R.string.minScale));
+        double maxScale = Double.parseDouble(getString(R.string.maxScale));
+        float disableAlpha = Float.parseFloat(getString(R.string.disableAlpha));
+
+        // Find menu items
+        ActionMenuItemView zoomout = (ActionMenuItemView) findViewById(R.id.zoomOut);
+        ActionMenuItemView zoomin = (ActionMenuItemView) findViewById(R.id.zoomIn);
+
+        // Update enabled state
+        zoomout.setEnabled(scale > minScale);
+        zoomin.setEnabled(scale < maxScale);
+
+        // Update icon
+        if (zoomout.isEnabled())  zoomout.setAlpha(1.0F);
+        if (zoomin.isEnabled())   zoomin.setAlpha(1.0F);
+        if (!zoomout.isEnabled()) zoomout.setAlpha(disableAlpha);
+        if (!zoomin.isEnabled())  zoomin.setAlpha(disableAlpha);
+    }
 
     /* Increase the UI scale by one step. This causes a zoom in
      * by some amount. If we have reached the limit to how far
@@ -78,23 +95,10 @@ public class IngeldopActivity extends AppCompatActivity {
      * limits, zoom step size, and button disable alpha
      * value can all be configured in the resources.  */
     public void scaleInc() {
-        // Load scale values
-        double maxScale = Double.parseDouble(getString(R.string.maxScale));
+        // Scale and update
         double stepScale = Double.parseDouble(getString(R.string.stepScale));
-        float disableAlpha = Float.parseFloat(getString(R.string.disableAlpha));
-
-        // Find menu items
-        ActionMenuItemView zoomout = (ActionMenuItemView) findViewById(R.id.zoomOut);
-        ActionMenuItemView zoomin = (ActionMenuItemView) findViewById(R.id.zoomIn);
-
-        // Scale and enable/disable
         scale *= (1+stepScale);
-        zoomout.setEnabled(true);
-        zoomout.setAlpha(1.0F);
-        if (scale >= maxScale) {
-            zoomin.setEnabled(false);
-            zoomin.setAlpha(disableAlpha);
-        }
+        updateScaleMenu();
     }
 
 
@@ -104,24 +108,10 @@ public class IngeldopActivity extends AppCompatActivity {
      * zoom limits, zoom step size, and button disable alpha
      * value can all be configured in the resources.  */
     public void scaleDec() {
-        // Load scale values
-        double minScale = Double.parseDouble(getString(R.string.minScale));
+        // Scale and update
         double stepScale = Double.parseDouble(getString(R.string.stepScale));
-        float  disableAlpha = Float.parseFloat(getString(R.string.disableAlpha));
-
-        // Find menu items
-        ActionMenuItemView zoomout = (ActionMenuItemView) findViewById(R.id.zoomOut);
-        ActionMenuItemView zoomin = (ActionMenuItemView) findViewById(R.id.zoomIn);
-
-        // Scale and enable/disable
         scale *= (1-stepScale);
-        zoomin.setEnabled(true);
-        zoomin.setAlpha(1.0F);
-        if (scale <= minScale) {
-            zoomout.setEnabled(false);
-            zoomout.setAlpha(disableAlpha);
-        }
-
+        updateScaleMenu();
     }
 
 
@@ -142,53 +132,50 @@ public class IngeldopActivity extends AppCompatActivity {
 
 
     void saveState() {
-        // Serialize current state to JSON
-        JSONObject state = new JSONObject();
-        try {
-            state.put("zoom", this.scale);
-            state.put("game", this.game.toJSON());
-            Log.i("SaveState", state.toString());
-        } catch (JSONException e) {
-            Log.e("SaveState", "Exception", e);
-        }
+        // Build file contents
+        StringBuilder out = new StringBuilder();
+        out.append("game:" + game + '\n');
+        out.append("scale:" + scale + '\n');
 
-        // Save JSON to internal storage
+        // Write to file
+        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
         try {
-            File file = new File(this.getFilesDir(), "save.json");
             FileWriter writer = new FileWriter(file);
-            writer.append(state.toString());
+            writer.append(out.toString());
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            Log.e("SaveState", "Exception", e);
+            Log.e("saveState()", "ERROR writing file", e);
         }
     }
 
     void restoreState() {
-        File file = new File(this.getFilesDir(), "save.json");
+        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
         try {
-            // Read in file
+            // Read file into string
             Scanner reader = new Scanner(file);
-            StringBuilder string = new StringBuilder();
             while (reader.hasNextLine()) {
-                string.append(reader.nextLine());
+                String s = reader.nextLine();
+
+                // Parse into fields
+                String[] keyvalue = s.split(":");
+                String key = keyvalue[0];
+                String val = keyvalue[1];
+
+                // Extract saved state
+                switch (key) {
+                    case "scale": scale = Double.parseDouble(val); break;
+                    case "game": game = Ingeldop.parseString(val); break;
+                }
             }
-            reader.close();
 
-            // Convert to JSON and restore
-            JSONObject state = new JSONObject(string.toString());
-            this.game = Ingeldop.fromJSON(state.getJSONObject("game"));
-            this.scale = state.getDouble("zoom");
-            findViewById(R.id.dealButton).requestLayout();;
-
-
-            Log.i("restoreState", string.toString());
-        } catch (FileNotFoundException | JSONException e) {
-            Log.i("restoreState", "ignoring state - EXCEPTION");
+        } catch (FileNotFoundException e) {
+            Log.i("restoreState()", "no saved state");
             newGame();
             scale = 1;
-            findViewById(R.id.dealButton).requestLayout();
         }
+        updateScaleMenu();
+        update();
     }
 
     @Override

@@ -1,4 +1,5 @@
 <resources>
+    <!-- UI Strings -->
     <string name="app_name">Ingeldop</string>
     <string name="discardText">Discard</string>
     <string name="newGameText">New</string>
@@ -13,4 +14,7 @@
     <string name="maxScale">1.4</string>
     <string name="stepScale">0.1</string>
     <string name="disableAlpha">0.4</string>
+
+    <!-- Misc Strings -->
+    <string name="saveFilename">saveState</string>
 </resources>

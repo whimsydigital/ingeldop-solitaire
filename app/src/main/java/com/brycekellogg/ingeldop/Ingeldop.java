@@ -6,12 +6,6 @@
  */
 package com.brycekellogg.ingeldop;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.*;
 
 public class Ingeldop {
@@ -22,19 +16,27 @@ public class Ingeldop {
     private List<Card> hand;
     private List<Boolean> sel;
 
+
     /**
-     * 
-     */
-    Ingeldop(Card[] seedDeck, Card[] seedHand) {
+     * Creates a new Ingeldop game
+     *
+     * This will initialize a new game from the passed
+     * arguments. Note that the seedHand and seedSel
+     * must be the same size. There is no limit on
+     * duplicate cards or number of decks used. We mostly
+     * use this for unit tests and loading saved states. */
+    Ingeldop(Card[] seedDeck, Card[] seedHand, Boolean[] seeSel) {
         this.deck = new ArrayList<Card>(Arrays.asList(seedDeck));
         this.hand = new ArrayList<Card>(Arrays.asList(seedHand));
-        this.sel = new ArrayList<Boolean>(Collections.nCopies(seedHand.length, false));
+        this.sel = new ArrayList<Boolean>(Arrays.asList(seeSel));
     }
 
 
     /**
-     * 
-     */
+     * Creates a new random Ingeldop game
+     *
+     * This will initialize a new game with an
+     * empty hand and a randomly shuffled deck. */
     Ingeldop() {
         this.deck = new ArrayList<Card>(Arrays.asList(Card.values()));  // Default un-shuffled deck
         Collections.shuffle(this.deck); // Shuffle deck
@@ -132,7 +134,8 @@ public class Ingeldop {
     }
 
 
-    /* Attempts to discard cards from the hand.
+    /**
+     * Attempts to discard cards from the hand.
      *
      * Cards can be discarded from the hand if they
      * match certain criteria. If these criteria are
@@ -241,9 +244,13 @@ public class Ingeldop {
     }
 
 
-    /* Test if there are any more possible moves. A game counts as over if
-     * there are no cards remaining in the deck and if it is not possible
-     * to make a valid call to discard() after any number of deals.  */
+    /**
+     * Test if there are any more possible moves.
+     *
+     * A game counts as over if there are no cards
+     * remaining in the deck and if it is not
+     * possible to make a valid call to discard()
+     * after any number of deals.  */
     boolean gameOver() {
         // Never over if still cards in deck
         if (deckSize() != 0) return false;
@@ -269,70 +276,76 @@ public class Ingeldop {
     }
 
 
-    /* Convert an Ingeldop game into a serialized JSON object of the form:
-     *           {"deck": ["HEART_7", ...],
-     *            "hand": ["SPADE_K", ...],
-     *            "sel":  [false, ...] }
-     * This contains all the internal information needed to restore an
-     * Ingeldop game from a saved or serialized state. Use fromJSON() to
-     * convert a JSON object of this format into an Ingeldop game.  */
-    public JSONObject toJSON() throws JSONException {
-        // Convert deck to JSON array
-        JSONArray jsonDeck = new JSONArray();
-        for (Card c : this.deck) {
-            jsonDeck.put(c.toString());
-        }
-
-        // Convert hand to JSON array
-        JSONArray  jsonHand  = new JSONArray();
-        for (Card c : this.hand) {
-            jsonHand.put(c.toString());
-        }
-
-        // Convert selection mask to JSON array
-        JSONArray jsonSel = new JSONArray();
-        for (boolean s : this.sel) {
-            jsonSel.put(s);
-        }
-
-        // Save all the JSON arrays into a JSON object
-        JSONObject jsonGame = new JSONObject();
-        jsonGame.put("deck", jsonDeck);
-        jsonGame.put("hand", jsonHand);
-        jsonGame.put("sel", jsonSel);
-        return jsonGame;
+    /**
+     * Get a string representation of an Ingeldop game.
+     *
+     * We convert an Ingeldop game into a string representation of the form:
+     *     deck=[HEART_7, ...];hand=[SPADE_K, ...];sel=[false, ...];  */
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append("deck=" + deck.toString() + ';');
+        out.append("hand=" + hand.toString() + ';');
+        out.append("sel="  + sel.toString()  + ';');
+        return out.toString();
     }
 
-    static public Ingeldop fromJSON(JSONObject json) {
 
-        try {
-            JSONArray jsonDeck = json.getJSONArray("deck");
-            JSONArray jsonHand = json.getJSONArray("hand");
-            JSONArray jsonSel = json.getJSONArray("sel");
+    /**
+     * Get an Ingeldop game from a string representation.
+     *
+     * We construct and return a new Ingeldop object based on the
+     * given string representation. The string argument is
+     * assumed to be of the form given by toString(). An Ingeldop
+     * object constructed this way will be equal to object whose
+     * toString() method was originally called.  */
+    public static Ingeldop parseString(String in) {
+        // Split deck, hand, sel from string
+        String[] parts = in.split(";");
+        String strDeck = parts[0];
+        String strHand = parts[1];
+        String strSel  = parts[2];
 
-            Card[] seedDeck = new Card[jsonDeck.length()];
-            for (int i = 0; i < jsonDeck.length(); i++) {
-                seedDeck[i] = Card.valueOf(jsonDeck.getString(i));
-            }
+        // Get contents of each as String[]
+        strDeck = strDeck.substring(strDeck.indexOf('[')+1, strDeck.indexOf(']'));
+        strHand = strHand.substring(strHand.indexOf('[')+1, strHand.indexOf(']'));
+        strSel  = strSel.substring(strSel.indexOf('[')+1, strSel.indexOf(']'));
 
-            Card[] seedHand = new Card[jsonHand.length()];
-            for (int i = 0; i < jsonHand.length(); i++) {
-                seedHand[i] = Card.valueOf(jsonHand.getString(i));
-            }
+        // Split to get individual values
+        String[] arrDeck = (strDeck.isEmpty()) ? new String[0] : strDeck.split(",");
+        String[] arrHand = (strHand.isEmpty()) ? new String[0] : strHand.split(",");
+        String[] arrSel  = (strSel.isEmpty())  ? new String[0] : strSel.split(",");
 
-            Ingeldop game = new Ingeldop(seedDeck, seedHand);
+        // Initialize seed arrays
+        Card[] seedDeck = new Card[arrDeck.length];
+        Card[] seedHand = new Card[arrHand.length];
+        Boolean[] seedSel = new Boolean[arrSel.length];
 
-            for (int i = 0; i < jsonSel.length(); i++) {
-                game.selectCard(i, jsonSel.getBoolean(i));
-            }
+        // Convert values and save to seed arrays
+        for (int i = 0; i < arrDeck.length; i++) seedDeck[i] = Card.valueOf(arrDeck[i].trim());
+        for (int i = 0; i < arrHand.length; i++) seedHand[i] = Card.valueOf(arrHand[i].trim());
+        for (int i = 0; i < arrSel.length; i++)  seedSel[i] = Boolean.parseBoolean(arrSel[i].trim());
 
-            return game;
-        } catch (JSONException e) {
-            Log.e("fromJSON", e.getMessage(), e);
-            return new Ingeldop();
-        }
+        return new Ingeldop(seedDeck, seedHand, seedSel);
     }
 
+
+    /**
+     * Test for equality with another Object.
+     *
+     * An Ingeldop game counts as equal if the deck and hand
+     * are identical and if the same cards are selected.  */
+    public boolean equals(Object o) {
+        // Easy cases
+        if (o == this) return true;
+        if (!(o instanceof Ingeldop)) return false;
+
+        // Equal if deck, hand, and sel are
+        Ingeldop oi = (Ingeldop) o;
+        if (!oi.deck.equals(deck)) return false;
+        if (!oi.hand.equals(hand)) return false;
+        if (!oi.sel.equals(sel))   return false;
+        return true;
+    }
 }
 
 /**
@@ -344,7 +357,8 @@ class DiscardException extends Exception {
     }
 }
 
-/* Representations of Cards and Suits.
+/**
+ * Representations of Cards and Suits.
  *
  * These are represented as Java enums, with a Card consisting
  * of a suit and a rank. A rank is an integer that maps ace = 1
