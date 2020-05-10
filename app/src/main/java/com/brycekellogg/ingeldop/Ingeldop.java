@@ -15,6 +15,7 @@ public class Ingeldop {
     private List<Card> deck;
     private List<Card> hand;
     private List<Boolean> sel;
+    private boolean dealt;
 
 
     /**
@@ -25,10 +26,11 @@ public class Ingeldop {
      * must be the same size. There is no limit on
      * duplicate cards or number of decks used. We mostly
      * use this for unit tests and loading saved states. */
-    Ingeldop(Card[] seedDeck, Card[] seedHand, Boolean[] seeSel) {
+    Ingeldop(Card[] seedDeck, Card[] seedHand, Boolean[] seedSel, boolean seedDealt) {
         this.deck = new ArrayList<Card>(Arrays.asList(seedDeck));
         this.hand = new ArrayList<Card>(Arrays.asList(seedHand));
-        this.sel = new ArrayList<Boolean>(Arrays.asList(seeSel));
+        this.sel = new ArrayList<Boolean>(Arrays.asList(seedSel));
+        this.dealt = seedDealt;
     }
 
 
@@ -42,6 +44,7 @@ public class Ingeldop {
         Collections.shuffle(this.deck); // Shuffle deck
         this.hand = new ArrayList<Card>(52);
         this.sel = new ArrayList<Boolean>(52);
+        this.dealt = false;
     }
 
 
@@ -63,6 +66,7 @@ public class Ingeldop {
             boolean s = sel.remove(0);
             hand.add(c);
             sel.add(s);
+            dealt = true;
         }
     }
 
@@ -228,11 +232,12 @@ public class Ingeldop {
                 hand.remove(i1);
                 sel.remove(i0);
                 sel.remove(i1);
-            } else if (middleSel && (outsideSameRank || outsideSameSuit)) {
+            } else if (middleSel && (outsideSameRank || outsideSameSuit) && dealt) {
                 hand.remove(i1);
                 hand.remove(i2);
                 sel.remove(i1);
                 sel.remove(i2);
+                dealt = false;
             } else {
                 throw new DiscardException("something");
             }
@@ -280,9 +285,10 @@ public class Ingeldop {
      * Get a string representation of an Ingeldop game.
      *
      * We convert an Ingeldop game into a string representation of the form:
-     *     deck=[HEART_7, ...];hand=[SPADE_K, ...];sel=[false, ...];  */
+     *     dealt=false;deck=[HEART_7, ...];hand=[SPADE_K, ...];sel=[false, ...];  */
     public String toString() {
         StringBuilder out = new StringBuilder();
+        out.append("dealt=" + dealt + ';');
         out.append("deck=" + deck.toString() + ';');
         out.append("hand=" + hand.toString() + ';');
         out.append("sel="  + sel.toString()  + ';');
@@ -301,14 +307,16 @@ public class Ingeldop {
     public static Ingeldop parseString(String in) {
         // Split deck, hand, sel from string
         String[] parts = in.split(";");
-        String strDeck = parts[0];
-        String strHand = parts[1];
-        String strSel  = parts[2];
+        String strDealt = parts[0];
+        String strDeck  = parts[1];
+        String strHand  = parts[2];
+        String strSel   = parts[3];
 
         // Get contents of each as String[]
-        strDeck = strDeck.substring(strDeck.indexOf('[')+1, strDeck.indexOf(']'));
-        strHand = strHand.substring(strHand.indexOf('[')+1, strHand.indexOf(']'));
-        strSel  = strSel.substring(strSel.indexOf('[')+1, strSel.indexOf(']'));
+        strDeck  = strDeck.substring(strDeck.indexOf('[')+1, strDeck.indexOf(']'));
+        strHand  = strHand.substring(strHand.indexOf('[')+1, strHand.indexOf(']'));
+        strSel   = strSel.substring(strSel.indexOf('[')+1, strSel.indexOf(']'));
+        strDealt = strDealt.substring(strDealt.indexOf('=')+1);
 
         // Split to get individual values
         String[] arrDeck = (strDeck.isEmpty()) ? new String[0] : strDeck.split(",");
@@ -319,13 +327,14 @@ public class Ingeldop {
         Card[] seedDeck = new Card[arrDeck.length];
         Card[] seedHand = new Card[arrHand.length];
         Boolean[] seedSel = new Boolean[arrSel.length];
+        boolean seedDealt = Boolean.parseBoolean(strDealt);
 
         // Convert values and save to seed arrays
         for (int i = 0; i < arrDeck.length; i++) seedDeck[i] = Card.valueOf(arrDeck[i].trim());
         for (int i = 0; i < arrHand.length; i++) seedHand[i] = Card.valueOf(arrHand[i].trim());
         for (int i = 0; i < arrSel.length; i++)  seedSel[i] = Boolean.parseBoolean(arrSel[i].trim());
 
-        return new Ingeldop(seedDeck, seedHand, seedSel);
+        return new Ingeldop(seedDeck, seedHand, seedSel, seedDealt);
     }
 
 

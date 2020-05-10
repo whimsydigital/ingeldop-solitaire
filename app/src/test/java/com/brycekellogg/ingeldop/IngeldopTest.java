@@ -11,7 +11,7 @@ public class IngeldopTest {
         Card[] deck = {Card.HEART_5, Card.DIAMOND_5, Card.SPADE_A, Card.HEART_2};  // deal from end
         Card[] hand = {};
         Boolean[] sel = {};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, false);
 
         // No deals yet
         assertEquals(game.handSize(), 0);
@@ -89,7 +89,7 @@ public class IngeldopTest {
         Card[] deck = {Card.HEART_5, Card.DIAMOND_5, Card.SPADE_A, Card.HEART_2};
         Card[] hand = {};
         Boolean[] sel = {};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, false);
        
         // Deal first card
         game.deal();
@@ -162,7 +162,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {};
         Boolean[] sel = {};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, false);
 
         // Try discarding
         try {
@@ -182,7 +182,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_5, Card.DIAMOND_5};
         Boolean[] sel = {false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and discard
         game.selectCard(0, true);
@@ -204,7 +204,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_A, Card.CLUB_2, Card.HEART_5, Card.DIAMOND_5};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and discard
         game.selectCard(2, true);
@@ -228,7 +228,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.CLUB_2, Card.HEART_5, Card.DIAMOND_5};
         Boolean[] sel = {false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and discard
         game.selectCard(1, true);
@@ -250,7 +250,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_5, Card.HEART_2};
         Boolean[] sel = {false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(0, true);
@@ -278,7 +278,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_A, Card.HEART_3, Card.HEART_5, Card.HEART_2};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(2, true);
@@ -307,7 +307,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_5, Card.HEART_A, Card.SPADE_A, Card.SPADE_3};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -335,7 +335,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.HEART_5, Card.SPADE_A, Card.SPADE_3};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and try discarding
         game.selectCard(0, true);
@@ -363,7 +363,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.SPADE_2, Card.CLUB_2, Card.HEART_5, Card.SPADE_A, Card.DIAMOND_9};
         Boolean[] sel = {false, false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and try discarding
         game.selectCard(1, true);
@@ -394,7 +394,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.HEART_5, Card.HEART_7, Card.HEART_3};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and discard
         game.selectCard(0, true);
@@ -417,7 +417,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_A, Card.CLUB_4, Card.HEART_A, Card.HEART_5, Card.HEART_7, Card.HEART_3};
         Boolean[] sel = {false, false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and discard
         game.selectCard(2, true);
@@ -443,7 +443,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.SPADE_5, Card.HEART_7, Card.HEART_3};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and try discarding
         game.selectCard(0, true);
@@ -474,7 +474,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.HEART_5, Card.HEART_7, Card.HEART_3, Card.CLUB_4};
         Boolean[] sel = {false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and try discarding
         game.selectCard(0, true);
@@ -505,7 +505,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.SPADE_5, Card.HEART_5, Card.HEART_3};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and try discarding
         game.selectCard(0, true);
@@ -535,7 +535,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.DIAMOND_4, Card.CLUB_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
         
         // Select and discard
         game.selectCard(1, true);
@@ -558,7 +558,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_3, Card.CLUB_10, Card.HEART_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and discard
         game.selectCard(1, true);
@@ -582,7 +582,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.DIAMOND_3, Card.CLUB_10, Card.HEART_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -611,7 +611,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.DIAMOND_A, Card.CLUB_10, Card.HEART_5, Card.SPADE_A, Card.SPADE_2};
         Boolean[] sel = {false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -641,7 +641,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_3, Card.CLUB_10, Card.HEART_5, Card.SPADE_A, Card.SPADE_2};
         Boolean[] sel = {false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -671,7 +671,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_3, Card.SPADE_10, Card.SPADE_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -695,7 +695,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.CLUB_3, Card.HEART_A, Card.SPADE_5, Card.CLUB_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Select and try discarding
         game.selectCard(1, true);
@@ -713,14 +713,14 @@ public class IngeldopTest {
      * We're only allowed to use the in between discard one at a
      * time. A deal must happen for another in between discard **/
     @Test
-    public void discardingInbetween7() throws DiscardException {
-        // Setup game
-        Card[] deck = {};
-        Card[] hand = {Card.CLUB_A, Card.HEART_2, Card.SPADE_A, Card.SPADE_5, Card.SPADE_6, Card.CLUB_A};
-        Boolean[] sel = {false, false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+    public void discardingInBetween7() throws DiscardException {
+        String gameStr = "dealt=true;" +
+                         "deck=[];" +
+                         "hand=[CLUB_A, HEART_2, SPADE_A, SPADE_5, SPADE_6, CLUB_A];" +
+                         "sel=[  false,   false,   false,   false,   false,  false];";
+        Ingeldop game = Ingeldop.parseString(gameStr);
 
-        // Select and try discarding
+        // Select and discard
         game.selectCard(3, true);
         game.selectCard(4, true);
         game.discard();
@@ -748,7 +748,7 @@ public class IngeldopTest {
         Card[] deck = {Card.DIAMOND_3, Card.CLUB_10, Card.HEART_5, Card.SPADE_A};
         Card[] hand = {};
         Boolean[] sel = {};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, false);
 
         // Deal all the cards in the deck
         while (game.deckSize() != 0) {
@@ -770,7 +770,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.CLUB_5, Card.HEART_5};
         Boolean[] sel = {false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Check game over
         assertFalse(game.gameOver());
@@ -786,7 +786,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.CLUB_5, Card.CLUB_4, Card.CLUB_9, Card.CLUB_7};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Check game over
         assertFalse(game.gameOver());
@@ -802,7 +802,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.DIAMOND_3, Card.CLUB_5, Card.HEART_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Check game over
         assertFalse(game.gameOver());
@@ -818,7 +818,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.DIAMOND_A, Card.CLUB_2, Card.CLUB_5, Card.HEART_6, Card.HEART_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertFalse(game.gameOver());
@@ -834,7 +834,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_2, Card.CLUB_3, Card.CLUB_2, Card.CLUB_5, Card.SPADE_6, Card.SPADE_5, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertFalse(game.gameOver());
@@ -850,7 +850,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_2, Card.CLUB_3, Card.CLUB_2, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertFalse(game.gameOver());
@@ -866,7 +866,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.CLUB_3, Card.CLUB_2, Card.SPADE_A};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertFalse(game.gameOver());
@@ -883,7 +883,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_A, Card.HEART_9, Card.SPADE_A, Card.CLUB_3, Card.CLUB_2};
         Boolean[] sel = {false, false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertFalse(game.gameOver());
@@ -899,7 +899,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.DIAMOND_A, Card.SPADE_9, Card.HEART_3, Card.CLUB_2};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertTrue(game.gameOver());
@@ -915,7 +915,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.HEART_9, Card.SPADE_A, Card.CLUB_9, Card.SPADE_2};
         Boolean[] sel = {false, false, false, false};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, true);
 
         // Can discard that pair
         assertTrue(game.gameOver());
@@ -932,7 +932,7 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {};
         Boolean[] sel = {};
-        Ingeldop game = new Ingeldop(deck, hand, sel);
+        Ingeldop game = new Ingeldop(deck, hand, sel, false);
 
         // Can discard that pair
         assertTrue(game.gameOver());
@@ -949,9 +949,9 @@ public class IngeldopTest {
         Card[] deck = {};
         Card[] hand = {Card.SPADE_A, Card.CLUB_4};
         Boolean[] sel = {false, false};
-        Ingeldop game0 = new Ingeldop(deck, hand, sel);
+        Ingeldop game0 = new Ingeldop(deck, hand, sel, false);
         Ingeldop game1 = Ingeldop.parseString(game0.toString());
-        String s0 = "deck=[];hand=[SPADE_A, CLUB_4];sel=[false, false];";
+        String s0 = "dealt=false;deck=[];hand=[SPADE_A, CLUB_4];sel=[false, false];";
 
         // Check result
         assertEquals(s0, game0.toString());
