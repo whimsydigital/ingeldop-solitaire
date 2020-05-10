@@ -10,7 +10,7 @@
          between the topScrollMargin and the topMargin. Making the
          right margin of the scroll view small allows the cards in
          the hand to appear to be going off screen to the right. -->
-    <dimen name="topScrollMargin">0dp</dimen>
+    <dimen name="topScrollMargin">00dp</dimen>
     <dimen name="rightScrollMargin">0dp</dimen>
 
     <!-- Default card destination size is based on standard playing card

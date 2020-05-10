@@ -75,7 +75,7 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
-    <android.widget.Toolbar
+    <com.brycekellogg.ingeldop.MenuToolbar
         android:id="@+id/toolbar"
         android:background="@color/background"
 
@@ -85,13 +85,9 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
 
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-
-
         compat:layout_constraintBottom_toBottomOf="parent"
-        compat:layout_constraintLeft_toRightOf="@id/discardButton"
-        compat:layout_constraintRight_toRightOf="parent" />
+        compat:layout_constraintRight_toRightOf="parent"
+        compat:layout_constraintLeft_toLeftOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

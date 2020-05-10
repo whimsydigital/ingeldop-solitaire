@@ -4,9 +4,10 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
+/* A custom button for discarding. It acts as it's own click listener
+ * and handles calling discard on the Ingeldop game and notifying
+ * the parent activity of required updates and discard exceptions.  */
 public class DiscardButton extends AppCompatButton implements View.OnClickListener {
 
     public DiscardButton(Context context, AttributeSet attrs) {
@@ -21,23 +22,17 @@ public class DiscardButton extends AppCompatButton implements View.OnClickListen
      * the game is over, we additionally display a popup notification. */
     @Override
     public void onClick(View v) {
-        Ingeldop game = ((IngeldopActivity)getContext()).game;
-
         try {
-            // Do the discard
+            // Get game and do the discard
+            Ingeldop game = ((IngeldopActivity)getContext()).game;
             game.discard();
-
-            // If game is over, change deal button image and display alert
-            if (game.gameOver()) {
-                ((IngeldopActivity)getContext()).findViewById(R.id.dealButton).setEnabled(false);
-            }
 
             // Update activity
             ((IngeldopActivity) getContext()).update();
 
         } catch (DiscardException e) {
-            // Couldn't discard, show a notification
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            // Update activity with error
+            ((IngeldopActivity) getContext()).alert(e.getMessage());
         }
     }
 }

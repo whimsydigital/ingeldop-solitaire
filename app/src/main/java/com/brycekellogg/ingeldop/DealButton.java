@@ -41,7 +41,7 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
     protected void onMeasure(int width, int height) {
         int defaultCardWidth  = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstWidth);
         int defaultCardHeight = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstHeight);
-        double scale = ((IngeldopActivity) getContext()).scale;
+        double scale = ((IngeldopActivity) getContext()).getScale();
         setMeasuredDimension((int) (defaultCardWidth*scale), (int) (defaultCardHeight*scale));
     }
 
@@ -55,10 +55,6 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
         // Get game and do the deal
         Ingeldop game = ((IngeldopActivity) getContext()).game;
         game.deal();
-
-        // Update button state on empty or game over
-        if (game.deckSize() == 0) this.setEmpty(true);
-        if (game.gameOver())      this.setEnabled(false);
 
         // Update activity
         ((IngeldopActivity) getContext()).update();

@@ -3,10 +3,9 @@ package com.brycekellogg.ingeldop;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,41 +26,107 @@ public class IngeldopActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        setContentView(R.layout.gamelayout);
-
-        // Setup toolbar actions
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.newGame:  newGame();          break;
-                    case R.id.zoomIn:   scale += 0.2; findViewById(R.id.dealButton).requestLayout(); break;
-                    case R.id.zoomOut:  scale -= 0.2; findViewById(R.id.dealButton).requestLayout(); break;
-                    case R.id.stats:    break;
-                    case R.id.settings: break;
-                }
-                return true;
-            }
-        });
-
-
-        // Try to load saved state
-        restoreState();
-
-        // Update layout
-        findViewById(R.id.layout).requestLayout();
-        findViewById(R.id.handView).requestLayout();
+        setContentView(R.layout.gamelayout);  // Set layout
+        restoreState();          // Try to load saved state
+        update();                // Update layout/graphics
     }
 
+
+    /* Display an alert with the given message. This currently
+     * makes use of the Toast functionality. Any alerts needed
+     * by any component should make use of this function.  */
+    public void alert(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    /* Update the graphical state of the play area. This involves
+     * updating the graphical (empty/enabled) state of the deal
+     * button, requesting a layout and invalidating the various
+     * views, and potentially displaying an alert if the game
+     * is over. This happens on every deal and discard, which
+     * might cause some overhead.  */
     public void update() {
+        // Update deal button state on empty or game over
+        DealButton dealButton = (DealButton) findViewById(R.id.dealButton);
+        dealButton.setEmpty(game.deckSize() == 0);
+        dealButton.setEnabled(!game.gameOver());
+
+        // Update layouts and graphics
+        findViewById(R.id.layout).requestLayout();
+        findViewById(R.id.dealButton).requestLayout();
         findViewById(R.id.handView).requestLayout();
-        if (game.gameOver()) Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
+
+        // Show alerts if needed
+        if (game.gameOver()) alert(getString(R.string.gameOverText));
     }
 
 
-    /* Starts a new game, resets deal button image to full deck, and
-     * requests a redraw of the hand view.  */
+    /* Accessor function for getting the scale. This
+     * value is used to scale the UI elements including
+     * the deal button, discard button, and hand. A
+     * default value of 1.0 means no scaling compared
+     * to the default sizes specified in the resources.  */
+    public double getScale() {
+        return scale;
+    }
+
+
+    /* Increase the UI scale by one step. This causes a zoom in
+     * by some amount. If we have reached the limit to how far
+     * we can zoom in, we disable the zoom in button. The zoom
+     * limits, zoom step size, and button disable alpha
+     * value can all be configured in the resources.  */
+    public void scaleInc() {
+        // Load scale values
+        double maxScale = Double.parseDouble(getString(R.string.maxScale));
+        double stepScale = Double.parseDouble(getString(R.string.stepScale));
+        float disableAlpha = Float.parseFloat(getString(R.string.disableAlpha));
+
+        // Find menu items
+        ActionMenuItemView zoomout = (ActionMenuItemView) findViewById(R.id.zoomOut);
+        ActionMenuItemView zoomin = (ActionMenuItemView) findViewById(R.id.zoomIn);
+
+        // Scale and enable/disable
+        scale *= (1+stepScale);
+        zoomout.setEnabled(true);
+        zoomout.setAlpha(1.0F);
+        if (scale >= maxScale) {
+            zoomin.setEnabled(false);
+            zoomin.setAlpha(disableAlpha);
+        }
+    }
+
+
+    /* Decrease the UI scale by one step. This causes a zoom out
+     * by some amount. If we have reached the limit to how far
+     * we can zoom out, we disable the zoom out button. The
+     * zoom limits, zoom step size, and button disable alpha
+     * value can all be configured in the resources.  */
+    public void scaleDec() {
+        // Load scale values
+        double minScale = Double.parseDouble(getString(R.string.minScale));
+        double stepScale = Double.parseDouble(getString(R.string.stepScale));
+        float  disableAlpha = Float.parseFloat(getString(R.string.disableAlpha));
+
+        // Find menu items
+        ActionMenuItemView zoomout = (ActionMenuItemView) findViewById(R.id.zoomOut);
+        ActionMenuItemView zoomin = (ActionMenuItemView) findViewById(R.id.zoomIn);
+
+        // Scale and enable/disable
+        scale *= (1-stepScale);
+        zoomin.setEnabled(true);
+        zoomin.setAlpha(1.0F);
+        if (scale <= minScale) {
+            zoomout.setEnabled(false);
+            zoomout.setAlpha(disableAlpha);
+        }
+
+    }
+
+
+    /* Starts a new game, resets deal button image to full
+     * deck, and requests a graphics/layout update.  */
     void newGame() {
         // Start a new game
         this.game = new Ingeldop();
@@ -72,8 +137,7 @@ public class IngeldopActivity extends AppCompatActivity {
         dealButton.setEnabled(true);
 
         // Redraw the hand view
-        findViewById(R.id.handView).requestLayout();
-        findViewById(R.id.handView).invalidate();
+        update();
     }
 
 
@@ -114,7 +178,7 @@ public class IngeldopActivity extends AppCompatActivity {
             // Convert to JSON and restore
             JSONObject state = new JSONObject(string.toString());
             this.game = Ingeldop.fromJSON(state.getJSONObject("game"));
-            this.scale = 1; //state.getDouble("zoom");
+            this.scale = state.getDouble("zoom");
             findViewById(R.id.dealButton).requestLayout();;
 
 
