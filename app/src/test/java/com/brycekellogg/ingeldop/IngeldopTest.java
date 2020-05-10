@@ -709,7 +709,7 @@ public class IngeldopTest {
     }
 
     /**
-     * Discard a in between multiple times.
+     * Discard an in between multiple times.
      * We're only allowed to use the in between discard one at a
      * time. A deal must happen for another in between discard **/
     @Test
@@ -723,6 +723,66 @@ public class IngeldopTest {
         // Select and discard
         game.selectCard(3, true);
         game.selectCard(4, true);
+        game.discard();
+
+        // Check result
+        assertEquals(4, game.handSize());
+
+        // Try discarding again
+        game.selectCard(1, true);
+        game.selectCard(2, true);
+        try {
+            game.discard();
+            fail("Expected DiscardException");
+        } catch (DiscardException e) { }
+    }
+
+    /**
+     * Discard an in between after a pair discard
+     * We're only allowed to use the in between discard after a
+     * deal. A deal must happen for another in between discard **/
+    @Test
+    public void discardingInBetween8() throws DiscardException {
+        String gameStr = "dealt=true;" +
+                "deck=[];" +
+                "hand=[CLUB_A, HEART_2, SPADE_5, SPADE_A, SPADE_K, CLUB_K];" +
+                "sel=[  false,   false,   false,   false,   false,  false];";
+        Ingeldop game = Ingeldop.parseString(gameStr);
+
+        // Select and discard
+        game.selectCard(4, true);
+        game.selectCard(5, true);
+        game.discard();
+
+        // Check result
+        assertEquals(4, game.handSize());
+
+        // Try discarding again
+        game.selectCard(1, true);
+        game.selectCard(2, true);
+        try {
+            game.discard();
+            fail("Expected DiscardException");
+        } catch (DiscardException e) { }
+    }
+
+    /**
+     * Discard an in between after a 4 of a suit discard
+     * We're only allowed to use the in between discard after a
+     * deal. A deal must happen for another in between discard **/
+    @Test
+    public void discardingInBetween9() throws DiscardException {
+        String gameStr = "dealt=true;" +
+                "deck=[];" +
+                "hand=[CLUB_A, HEART_2, SPADE_5, SPADE_A, SPADE_K, SPADE_Q, SPADE_J, SPADE_10];" +
+                "sel=[  false,   false,   false,   false,   false,  false, false, false];";
+        Ingeldop game = Ingeldop.parseString(gameStr);
+
+        // Select and discard
+        game.selectCard(4, true);
+        game.selectCard(5, true);
+        game.selectCard(6, true);
+        game.selectCard(7, true);
         game.discard();
 
         // Check result

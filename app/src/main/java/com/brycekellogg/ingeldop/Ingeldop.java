@@ -196,6 +196,7 @@ public class Ingeldop {
                 sel.remove(i1);
                 sel.remove(i2);
                 sel.remove(i3);
+                dealt = false;
             } else {
                 throw new DiscardException("Can only discard 4 when same suit at the top");
             }
@@ -213,6 +214,7 @@ public class Ingeldop {
                 hand.remove(i1);
                 sel.remove(i0);
                 sel.remove(i1);
+                dealt = false;
             } else {
                 throw new DiscardException("Can only discard adjacent when a pair");
             }
@@ -232,6 +234,7 @@ public class Ingeldop {
                 hand.remove(i1);
                 sel.remove(i0);
                 sel.remove(i1);
+                dealt = false;
             } else if (middleSel && (outsideSameRank || outsideSameSuit) && dealt) {
                 hand.remove(i1);
                 hand.remove(i2);
