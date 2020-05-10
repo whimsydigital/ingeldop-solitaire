@@ -709,6 +709,35 @@ public class IngeldopTest {
     }
 
     /**
+     * Discard a in between multiple times.
+     * We're only allowed to use the in between discard one at a
+     * time. A deal must happen for another in between discard **/
+    @Test
+    public void discardingInbetween7() throws DiscardException {
+        // Setup game
+        Card[] deck = {};
+        Card[] hand = {Card.CLUB_A, Card.HEART_2, Card.SPADE_A, Card.SPADE_5, Card.SPADE_6, Card.CLUB_A};
+        Boolean[] sel = {false, false, false, false, false, false};
+        Ingeldop game = new Ingeldop(deck, hand, sel);
+
+        // Select and try discarding
+        game.selectCard(3, true);
+        game.selectCard(4, true);
+        game.discard();
+
+        // Check result
+        assertEquals(4, game.handSize());
+
+        // Try discarding again
+        game.selectCard(1, true);
+        game.selectCard(2, true);
+        try {
+            game.discard();
+            fail("Expected DiscardException");
+        } catch (DiscardException e) { }
+    }
+
+    /**
      * Game not over while there are cards in the deck.
      * Tests to make sure we don't report game over until
      * there are no longer any cards in the deck. The deck
