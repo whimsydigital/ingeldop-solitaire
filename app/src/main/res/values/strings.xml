@@ -10,8 +10,8 @@
     <string name="gameOverText">Game Over</string>
 
     <!-- Double Values-->
-    <string name="minScale">0.4</string>
-    <string name="maxScale">1.4</string>
+    <string name="minScale">0.6</string>
+    <string name="maxScale">2.0</string>
     <string name="stepScale">0.1</string>
     <string name="disableAlpha">0.4</string>
 
