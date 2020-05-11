@@ -54,11 +54,10 @@ public class HandViewExpanded extends View {
         double zoomPercent = ((IngeldopActivity)getContext()).scale;
 
         // Calculate rect boundaries
-        int selMargin  = topMargin - topScrollMargin;
-        int topPadding = topMargin + topScrollMargin;
+        int topPadding = topMargin - topScrollMargin;
 
-        dstRect.top    = topPadding - (sel ? selMargin : 0);
-        dstRect.bottom = topPadding - (sel ? selMargin : 0) + (int) (cardHeight*zoomPercent);
+        dstRect.top    = topPadding - (sel ? topPadding : 0);
+        dstRect.bottom = topPadding - (sel ? topPadding : 0) + (int) (cardHeight*zoomPercent);
         dstRect.left  = (int) ((i+0)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
         dstRect.right = (int) ((i+1)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
 

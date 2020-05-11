@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="leftMargin">32dp</dimen>
-    <dimen name="topMargin">32dp</dimen>
+    <dimen name="leftMargin">16dp</dimen>
+    <dimen name="topMargin">42dp</dimen>
+    <dimen name="bottomMargin">5dp</dimen>
 
     <!-- Margins for the scroll view. These are different from the
          normal margins because the cards move within the scroll view.
@@ -10,7 +11,7 @@
          between the topScrollMargin and the topMargin. Making the
          right margin of the scroll view small allows the cards in
          the hand to appear to be going off screen to the right. -->
-    <dimen name="topScrollMargin">00dp</dimen>
+    <dimen name="topScrollMargin">10dp</dimen>
     <dimen name="rightScrollMargin">0dp</dimen>
 
     <!-- Default card destination size is based on standard playing card

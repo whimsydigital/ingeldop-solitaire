@@ -35,11 +35,12 @@
         compat:autoSizeMaxTextSize="200sp"
         android:maxLines="1"
 
-        android:layout_marginLeft="@dimen/leftMargin"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        compat:layout_constraintLeft_toLeftOf="parent"
-        compat:layout_constraintTop_toBottomOf="@id/dealButton"
+        android:layout_marginBottom="@dimen/bottomMargin"
+        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
         compat:layout_constraintRight_toRightOf="@id/dealButton"
+        compat:layout_constraintBottom_toBottomOf="parent"
 
         android:text="@string/discardText" />
 
@@ -82,12 +83,11 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
 
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="@dimen/bottomMargin"
 
         compat:layout_constraintBottom_toBottomOf="parent"
-        compat:layout_constraintRight_toRightOf="parent"
-        compat:layout_constraintLeft_toLeftOf="parent"/>
+        compat:layout_constraintRight_toRightOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>
