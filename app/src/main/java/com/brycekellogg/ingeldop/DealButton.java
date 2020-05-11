@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 
 /* A custom image button that defines a custom state for an empty deck drawable,
  * handles measuring itself differently based on a default size and a scale
@@ -55,6 +56,10 @@ public class DealButton extends AppCompatImageButton implements View.OnClickList
         // Get game and do the deal
         Ingeldop game = ((IngeldopActivity) getContext()).game;
         game.deal();
+
+        // Scroll to the right on deal
+        ((HorizontalScrollView) ((IngeldopActivity) getContext()).findViewById(R.id.scrollView))
+                                                                 .fullScroll(View.FOCUS_RIGHT);
 
         // Update activity
         ((IngeldopActivity) getContext()).update();
