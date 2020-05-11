@@ -23,7 +23,7 @@ public class HandViewExpanded extends View {
     private Map<Card, Drawable> spritesheet;
     private Rect dstRect = new Rect();
 
-    private double overlap = 0.8;
+    private double overlap;
 
     public HandViewExpanded(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,6 +69,8 @@ public class HandViewExpanded extends View {
     protected void onMeasure(int width, int height) {
         // Get reference to current game
         Ingeldop game = ((IngeldopActivity)getContext()).game;
+
+        this.overlap = Double.parseDouble(((IngeldopActivity)getContext()).getString(R.string.defaultOverlap));
 
         // Calculate bottom & left bounds
         setDstRect(0, false);
