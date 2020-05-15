@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <com.brycekellogg.ingeldop.DealButton
+    <com.whimsydigital.ingeldop.DealButton
         android:id="@+id/dealButton"
 
         android:layout_width="0dp"
@@ -75,7 +75,7 @@
         compat:layout_constraintRight_toRightOf="parent"
         compat:layout_constraintTop_toTopOf="parent">
 
-        <com.brycekellogg.ingeldop.HandViewExpanded
+        <com.whimsydigital.ingeldop.HandViewExpanded
             android:id="@+id/handView"
             android:layout_width="0dp"
             android:layout_height="match_parent" />

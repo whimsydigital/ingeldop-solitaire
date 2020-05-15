@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.brycekellogg.ingeldop">
+    package="com.whimsydigital.ingeldop">
 
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ingeldop_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".IngeldopActivity"
+        <activity android:name="com.whimsydigital.ingeldop.IngeldopActivity"
                   android:screenOrientation="landscape"
                   android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
                   tools:ignore="LockedOrientationActivity">

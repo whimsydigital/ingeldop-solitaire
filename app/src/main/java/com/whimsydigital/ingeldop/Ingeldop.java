@@ -4,7 +4,7 @@
  * Copyright: 2019 Bryce Kellogg
  * License: Proprietary
  */
-package com.brycekellogg.ingeldop;
+package com.whimsydigital.ingeldop;
 
 import java.util.*;
 

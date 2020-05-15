@@ -1,4 +1,4 @@
-package com.brycekellogg.ingeldop;
+package com.whimsydigital.ingeldop;
 
 import static org.junit.Assert.*;
 
