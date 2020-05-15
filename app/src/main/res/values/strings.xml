@@ -2,18 +2,19 @@
     <!-- UI Strings -->
     <string name="app_name">Ingeldop</string>
     <string name="discardText">Discard</string>
-    <string name="newGameText">New</string>
-    <string name="zoomInText">Zoom In</string>
-    <string name="zoomOutText">Zoom Out</string>
-    <string name="statsText">Stats</string>
-    <string name="settingsText">Settings</string>
     <string name="gameOverText">Game Over</string>
 
     <!-- Double Values-->
     <string name="minScale">0.6</string>
     <string name="maxScale">2.0</string>
     <string name="stepScale">0.1</string>
+
+    <!-- Alpha values for indicating menu items
+         are enabled or disabled. Makes stuff grey. -->
     <string name="disableAlpha">0.4</string>
+    <string name="enableAlpha">1.0</string>
+
+
     <string name="defaultOverlap">0.8</string>
 
     <!-- Misc Strings -->

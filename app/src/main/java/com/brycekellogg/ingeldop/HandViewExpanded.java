@@ -24,6 +24,9 @@ public class HandViewExpanded extends View {
     private Rect dstRect = new Rect();
 
     private double overlap;
+    private int cardHeight;
+    private int cardWidth;
+    private int selPadding;
 
     public HandViewExpanded(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,52 +45,42 @@ public class HandViewExpanded extends View {
 
     }
 
-    /* Calculate the destination rect for where a card in the hand should be placed. This is
-       dependent on the natural aspect ratio of a playing card, the current zoom ratio, the
-       index of the card in the hand, the size of overlap, and whether or not the card is selected.  */
+    /* Calculate the destination rect for where a card in the hand should be placed.
+     * This is dependent on the playing card width/height (based on current zoom level),
+     * the index of the card in the hand, the size of overlap, and whether or not the
+     * card is selected.  */
     Rect setDstRect(int i, boolean sel) {
-        // Read in resources
-        int topMargin       = this.getResources().getDimensionPixelSize(R.dimen.topMargin);
-        int topScrollMargin = this.getResources().getDimensionPixelSize(R.dimen.topScrollMargin);
-        int cardHeight = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstHeight);
-        int cardWidth  = this.getResources().getDimensionPixelSize(R.dimen.defaultCardDstWidth);
-        double zoomPercent = ((IngeldopActivity)getContext()).scale;
-
         // Calculate rect boundaries
-        int topPadding = topMargin - topScrollMargin;
-
-        dstRect.top    = topPadding - (sel ? topPadding : 0);
-        dstRect.bottom = topPadding - (sel ? topPadding : 0) + (int) (cardHeight*zoomPercent);
-        dstRect.left  = (int) ((i+0)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
-        dstRect.right = (int) ((i+1)*cardWidth*zoomPercent - i*cardWidth*zoomPercent*overlap);
-
+        dstRect.top    = selPadding - (sel ? selPadding : 0);
+        dstRect.bottom = selPadding - (sel ? selPadding : 0) + cardHeight;
+        dstRect.left  = (int) ((i+0)*cardWidth - i*cardWidth*overlap);
+        dstRect.right = (int) ((i+1)*cardWidth - i*cardWidth*overlap);
         return dstRect;
     }
 
 
     @Override
-    protected void onMeasure(int width, int height) {
-        // Get reference to current game
-        Ingeldop game = ((IngeldopActivity)getContext()).game;
-
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // Get resources
+        int topMargin       = this.getResources().getDimensionPixelSize(R.dimen.topMargin);
+        int topScrollMargin = this.getResources().getDimensionPixelSize(R.dimen.topScrollMargin);
         this.overlap = Double.parseDouble(((IngeldopActivity)getContext()).getString(R.string.defaultOverlap));
 
-        // Calculate bottom & left bounds
-        setDstRect(0, false);
-        int bottom = dstRect.bottom;
-        int left   = dstRect.left;
+        int handHeight = MeasureSpec.getSize(heightMeasureSpec);
+        double aspectRadio = 75.0/100.0;
 
-        // Calculate top & right bounds
-        setDstRect(game.handSize()-1, true);
-        int top = dstRect.top;
-        int right = dstRect.right;
+        // Calculate card size & padding
+        selPadding = topMargin - topScrollMargin;
+        cardHeight = handHeight - selPadding;
+        cardWidth  = (int) (cardHeight*aspectRadio);
 
-        // Calculate measurements
-        int measuredWidth  = right - left;
-        int measuredHeight = bottom - top;
+        // Get reference to current game & calculate width
+        Ingeldop game = ((IngeldopActivity)getContext()).game;
+        int numCards  = game.handSize();
+        int handWidth = (int) (numCards*cardWidth - (numCards-1)*cardWidth*overlap);
 
         // Set measurements
-        setMeasuredDimension(measuredWidth, measuredHeight);
+        setMeasuredDimension(handWidth, handHeight);
     }
 
     @Override

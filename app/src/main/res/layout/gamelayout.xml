@@ -12,24 +12,29 @@
     <com.brycekellogg.ingeldop.DealButton
         android:id="@+id/dealButton"
 
-        android:layout_width="@dimen/defaultCardDstWidth"
-        android:layout_height="@dimen/defaultCardDstHeight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
 
         android:padding="0dp"
         android:layout_marginLeft="@dimen/leftMargin"
         android:layout_marginTop="@dimen/topMargin"
+        android:layout_marginBottom="100dp"
         compat:layout_constraintLeft_toLeftOf="parent"
         compat:layout_constraintTop_toTopOf="parent"
+        compat:layout_constraintBottom_toTopOf="@id/discardButton"
+        compat:layout_constraintDimensionRatio="72:100"
 
         android:scaleType="fitCenter"
         android:src="@drawable/dealbutton"
         android:rotation="0"/>
 
-    <com.brycekellogg.ingeldop.DiscardButton
+    <Button
         android:id="@+id/discardButton"
 
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        compat:layout_constraintDimensionRatio="2:1"
+
         compat:autoSizeTextType="uniform"
         compat:autoSizeMinTextSize="3sp"
         compat:autoSizeMaxTextSize="200sp"
@@ -76,18 +81,65 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
-    <com.brycekellogg.ingeldop.MenuToolbar
-        android:id="@+id/toolbar"
-        android:background="@color/background"
-
+    <LinearLayout
+        android:background="@color/disabled"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="@dimen/bottomMargin"
-
+        compat:layout_constraintTop_toTopOf="@id/discardButton"
         compat:layout_constraintBottom_toBottomOf="parent"
-        compat:layout_constraintRight_toRightOf="parent"/>
+        compat:layout_constraintRight_toRightOf="parent"
+        compat:layout_constraintWidth_default="percent"
+        compat:layout_constraintWidth_percent=".5"
+        android:gravity="center">
 
+        <ImageButton
+            android:id="@+id/newGameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_refresh"
+            android:background="@color/background"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/zoomInButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_zoomin"
+            android:background="@color/background"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/zoomOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_zoomout"
+            android:background="@color/background"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/statsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_stats"
+            android:background="@color/background"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_settings"
+            android:background="@color/background"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"/>
 
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
