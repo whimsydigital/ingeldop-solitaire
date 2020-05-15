@@ -65,9 +65,12 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 
         // Save UI elements we interact with
         dealButton = findViewById(R.id.dealButton);
-        dealButtonLayoutParams = (ConstraintLayout.LayoutParams) dealButton.getLayoutParams();
         zoomOutButton = findViewById(R.id.zoomOutButton);
         zoomInButton  = findViewById(R.id.zoomInButton);
+
+        // Layout params for zooming
+        dealButtonLayoutParams = (ConstraintLayout.LayoutParams) dealButton.getLayoutParams();
+
 
         game = new Ingeldop();
         doZoom(false, false);  // Update scale
@@ -113,8 +116,11 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
             case R.id.dealButton:    deal();    break;
             case R.id.discardButton: discard(); break;
             case R.id.newGameButton: newGame(); break;
+            case R.id.statsButton:    break;
+            case R.id.settingsButton: break;
             case R.id.zoomInButton:  doZoom(true, false); break;
             case R.id.zoomOutButton: doZoom(false, true); break;
+
         }
     }
 
@@ -171,15 +177,12 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         // Apply layout changes to LayoutParams
         dealButtonLayoutParams.bottomMargin = marginBetween;
 
-//        // Update zoom icons enabled state
-//        zoomOutMenuItem.setEnabled(marginBetween < marginBetweenMax);
-//        zoomInMenuItem.setEnabled(marginBetween > marginBetweenMin);
-//
-//        // Update zoom icon color (grey for disabled)
-//        zoomOutMenuItem.setAlpha(zoomOutMenuItem.isEnabled() ? enableAlpha : disableAlpha);
-//        zoomInMenuItem.setAlpha(zoomInMenuItem.isEnabled() ? enableAlpha : disableAlpha);
+        // Update zoom icons enabled state
+        zoomOutButton.setEnabled(marginBetween < marginBetweenMax);
+        zoomInButton.setEnabled(marginBetween > marginBetweenMin);
 
-        update();
+        // Update UI layout
+        dealButton.requestLayout();
     }
 
 
