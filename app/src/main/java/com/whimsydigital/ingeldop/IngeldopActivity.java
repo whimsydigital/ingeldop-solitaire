@@ -1,6 +1,7 @@
 package com.whimsydigital.ingeldop;
 
 
+import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +15,7 @@ import android.widget.Toast;
 public class IngeldopActivity extends AppCompatActivity implements View.OnClickListener {
     public Ingeldop game;
 
-
-
+    // Zoom margins
     private int marginBetween;
     private int marginBetweenStep;
     private int marginBetweenMin;
@@ -25,8 +25,11 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     HorizontalScrollView scrollView;
     DealButton dealButton;
     View discardButton;
-    View zoomOutButton;
+    View newGameButton;
     View zoomInButton;
+    View zoomOutButton;
+    View statsButton;
+    View settingsButton;
     View handView;
 
     // Layout params used for zooming
@@ -37,36 +40,54 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        setContentView(R.layout.gamelayout);  // Set layout
-        findViewById(R.id.discardButton).setOnClickListener(this);
-        findViewById(R.id.dealButton).setOnClickListener(this);
-        findViewById(R.id.newGameButton).setOnClickListener(this);
-        findViewById(R.id.zoomInButton).setOnClickListener(this);
-        findViewById(R.id.zoomOutButton).setOnClickListener(this);
-        findViewById(R.id.statsButton).setOnClickListener(this);
-        findViewById(R.id.settingsButton).setOnClickListener(this);
 
-        marginBetween     = 100;  // TODO: loaded from saved state
-        marginBetweenStep = 30;   // TODO: based on screen size
-        marginBetweenMin  = 10;   // TODO: based on screen size
-        marginBetweenMax  = 400;  // TODO: based on screen size
+        // Set layout for this activity
+        setContentView(R.layout.gamelayout);
 
         // Save UI elements we interact with
-        scrollView    = findViewById(R.id.scrollView);
-        dealButton    = findViewById(R.id.dealButton);
-        discardButton = findViewById(R.id.discardButton);
-        zoomOutButton = findViewById(R.id.zoomOutButton);
-        zoomInButton  = findViewById(R.id.zoomInButton);
-        handView      = findViewById(R.id.handView);
+        scrollView     = findViewById(R.id.scrollView);
+        dealButton     = findViewById(R.id.dealButton);
+        discardButton  = findViewById(R.id.discardButton);
+        newGameButton  = findViewById(R.id.newGameButton);
+        zoomInButton   = findViewById(R.id.zoomInButton);
+        zoomOutButton  = findViewById(R.id.zoomOutButton);
+        statsButton    = findViewById(R.id.statsButton);
+        settingsButton = findViewById(R.id.settingsButton);
+        handView       = findViewById(R.id.handView);
 
-        // Layout params for zooming
+        // Save layout params for zooming
         dealButtonLayoutParams = (ConstraintLayout.LayoutParams) dealButton.getLayoutParams();
 
+        // Set all out click listeners
+        dealButton.setOnClickListener(this);
+        discardButton.setOnClickListener(this);
+        newGameButton.setOnClickListener(this);
+        zoomInButton.setOnClickListener(this);
+        zoomOutButton.setOnClickListener(this);
+        statsButton.setOnClickListener(this);
+        settingsButton.setOnClickListener(this);
 
+        // Get info needed to calculate zoom margins
+        final int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        final double marginBetweenFraction     = Double.parseDouble(getString(R.string.marginBetweenFraction));
+        final double marginBetweenStepFraction = Double.parseDouble(getString(R.string.marginBetweenStepFraction));
+        final double marginBetweenMinFraction  = Double.parseDouble(getString(R.string.marginBetweenMinFraction));
+        final double marginBetweenMaxFraction  = Double.parseDouble(getString(R.string.marginBetweenMaxFraction));
+
+        // Calculate zoom margins based on screen size
+        marginBetween     = (int) (screenHeight*marginBetweenFraction);
+        marginBetweenStep = (int) (screenHeight*marginBetweenStepFraction);
+        marginBetweenMin  = (int) (screenHeight*marginBetweenMinFraction);
+        marginBetweenMax  = (int) (screenHeight*marginBetweenMaxFraction);
+
+        // Initialize game in case no saved game
         game = new Ingeldop();
-        doZoom(false, false);  // Update scale
 
-//        restoreState();          // Try to load saved state
+        // Try to load saved state
+        restoreState(getString(R.string.saveFilename));
+
+        // Update UI zoom based on saved or defaults
+        doZoom(false, false);
     }
 
 
@@ -195,7 +216,10 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-//    void saveState() {
+    /**
+     *
+     */
+    private void saveState(String filename) {
 //        // Build file contents
 //        StringBuilder out = new StringBuilder();
 //        out.append("game:" + game + '\n');
@@ -211,9 +235,13 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 //        } catch (IOException e) {
 //            Log.e("saveState()", "ERROR writing file", e);
 //        }
-//    }
+    }
 
-//    void restoreState() {
+
+    /**
+     *
+     */
+    private void restoreState(String filename) {
 //        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
 //        try {
 //            // Read file into string
@@ -239,12 +267,13 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 //            scale = 1;
 //        }
 //        update();
-//    }
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-//        saveState();
+        saveState(getString(R.string.saveFilename));
     }
 
 }
