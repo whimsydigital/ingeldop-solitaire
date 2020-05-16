@@ -13,8 +13,19 @@
     android:paddingRight="0dp"
     android:background="@color/background">
 
+
+    <!-- This spacer sits above the deal button and creates the space
+         for cards to pop up and down when selected. Its aspect ratio
+         is set to a fixed value such that a reasonable portion of a
+         card is above the hand when selected. Because we are using
+         an aspect ratio and the width of the spacer is tied to the
+         width of the deal button, the height will change as we
+         zoom in and out, resulting in the same fraction of a card
+         popping up irrespective of the size of the cards.
+
+         TODO: specify ratio in values file. -->
     <Space
-        android:id="@+id/dealSpace"
+        android:id="@+id/dealTopSpace"
         compat:layout_constraintTop_toTopOf="parent"
         compat:layout_constraintLeft_toLeftOf="@id/dealButton"
         compat:layout_constraintRight_toRightOf="@id/dealButton"
@@ -22,86 +33,137 @@
         android:layout_width="0dp"
         android:layout_height="0dp" />
 
+
+    <!-- This spacer sits between the deal button and the hand view
+         and acts as a dynamic margin between the two. When given a
+         fixed margin, this space seems to get much too big when
+         zoomed out and a dynamic space looks better. We achieve
+         this by again setting the spacer to have a fixed aspect
+         ratio with the height tied to the height of the deal button.
+         Thus, when the deal button gets smaller on a zoom out, the
+         width of the spacer gets smaller and the hand view moves
+         closer to the deal button.
+
+         TODO: specify ratio in values file. -->
     <Space
-        android:id="@+id/deckHandSpace"
+        android:id="@+id/dealRightSpace"
         compat:layout_constraintTop_toTopOf="@id/dealButton"
         compat:layout_constraintBottom_toBottomOf="@id/dealButton"
         compat:layout_constraintLeft_toRightOf="@id/dealButton"
+        compat:layout_constraintDimensionRatio="1:6"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        compat:layout_constraintDimensionRatio="1:6" />
+        android:layout_height="0dp" />
 
+
+    <!-- The button for dealing is placed in the top left corner,
+         below and to the left of the two spacers. It also has a
+         fixed aspect ratio to that of a standard playing card. Its
+         height is constrained by the margin between it and the discard
+         button below it. We set the padding to be zero so that the
+         source image is scaled to the full button size.
+
+         TODO: specify ratio in values file. -->
     <com.whimsydigital.ingeldop.DealButton
         android:id="@+id/dealButton"
-
+        compat:layout_constraintTop_toBottomOf="@id/dealTopSpace"
+        compat:layout_constraintBottom_toTopOf="@id/discardButton"
+        compat:layout_constraintLeft_toLeftOf="parent"
+        compat:layout_constraintDimensionRatio="72:100"
         android:layout_width="0dp"
         android:layout_height="0dp"
-
-        android:padding="0dp"
         android:layout_marginBottom="100dp"
-        compat:layout_constraintLeft_toLeftOf="parent"
-        compat:layout_constraintTop_toBottomOf="@id/dealSpace"
-        compat:layout_constraintBottom_toTopOf="@id/discardButton"
-        compat:layout_constraintDimensionRatio="72:100"
-
+        android:padding="0dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/dealbutton"/>
+        android:src="@drawable/dealbutton" />
 
+
+    <!-- The button for discarding is placed in the lower left corner,
+         constrained in width to match the width of the deal button,
+         and having a fixed aspect ratio o control its height. It will
+         resize as the deal button changes size. The text on the button
+         will also change size between the specified min and max sizes.
+         Additionally, we fix the number of text lines to 1 to prevent
+         word breaks in the text.
+
+         TODO: specify ratio in values file.  -->
     <Button
         android:id="@+id/discardButton"
-
+        compat:layout_constraintBottom_toBottomOf="parent"
+        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
+        compat:layout_constraintRight_toRightOf="@id/dealButton"
+        compat:layout_constraintDimensionRatio="2:1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        compat:layout_constraintDimensionRatio="2:1"
-
         compat:autoSizeTextType="uniform"
         compat:autoSizeMinTextSize="3sp"
         compat:autoSizeMaxTextSize="200sp"
         android:maxLines="1"
-        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
-        compat:layout_constraintRight_toRightOf="@id/dealButton"
-        compat:layout_constraintBottom_toBottomOf="parent"
-
         android:text="@string/discardText" />
 
-    <!--
-        - Set layout width and height to 0dp so they expand to constraints
-        -
-    -->
+
+    <!-- The hand is contained in a scroll view so that if the hand gets
+         too long (horizontally) at the current zoom level, a scroll bar
+         will appear and allow us to see all the cards in the hand if
+         desired. The scroll view is placed directly to the right of the
+         deal button and spacer, has its bottom edge flush with the deal
+         button, and stretches all the way to the top and to the right of
+         the container (minus any container padding). We set the background
+         color to match that of the container so an empty hand will not
+         look out of place, and configure the scroll bar to always show
+         when there is content to scroll.  -->
     <HorizontalScrollView
         android:id="@+id/scrollView"
-        android:background="@color/background"
-
+        compat:layout_constraintTop_toTopOf="parent"
+        compat:layout_constraintBottom_toBottomOf="@id/dealButton"
+        compat:layout_constraintLeft_toRightOf="@id/dealRightSpace"
+        compat:layout_constraintRight_toRightOf="parent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginRight="@dimen/rightScrollMargin"
-
+        android:background="@color/background"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarFadeDuration="0"
-        android:scrollbarSize="10dp"
+        android:scrollbarSize="10dp" >
 
-        compat:layout_constraintBottom_toBottomOf="@+id/dealButton"
-        compat:layout_constraintLeft_toRightOf="@+id/deckHandSpace"
-        compat:layout_constraintRight_toRightOf="parent"
-        compat:layout_constraintTop_toTopOf="parent">
-
+        <!-- The only child of the scroll view is a custom view for the hand.
+             It displays the cards in the hand and is set to take up the full
+             height of the parent. This is so that the hand has additional space
+             (equal to the height of the spacer on top of the deal button) for a
+             selected card to pop up. For width, the hand view expands as it
+             gains cards in the hand. This allows the scroll bar to disappear
+             when the hand view is small enough to contain all the cards in the
+             viewable space.  -->
         <com.whimsydigital.ingeldop.HandViewExpanded
             android:id="@+id/handView"
             android:layout_width="0dp"
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
+    <!-- The various buttons for new game, zoom, etc. are contained in
+         this linear layout at the bottom right. It is constrained to
+         match the discard button in height, and take up a fixed
+         percentage of the screen in width. The zoom limits should
+         make sure that the discard button never grows enough in width
+         to intersect these buttons. Additionally, we set the gravity
+         to center to make sure the button are evenly distributed. -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginRight="10dp"
         compat:layout_constraintTop_toTopOf="@id/discardButton"
         compat:layout_constraintBottom_toBottomOf="parent"
         compat:layout_constraintRight_toRightOf="parent"
         compat:layout_constraintWidth_default="percent"
         compat:layout_constraintWidth_percent=".5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="10dp"
         android:gravity="center">
 
+        <!-- The game menu consists of a set of image buttons with
+             icons for each action. They are set to have width to match
+             the icons but fill the parent in height so that they scale
+             when zooming because of the height change of the discard
+             button. The images are scaled to fit in the center of the
+             buttons, and the background is set to match the app
+             background. Additionally, we give each button an equal
+             weight so they are distributed evenly in the parent layout.  -->
         <ImageButton
             android:id="@+id/newGameButton"
             android:layout_width="wrap_content"
@@ -147,6 +209,5 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:layout_weight="1"/>
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
