@@ -2,7 +2,7 @@
 <resources>
 
     <dimen name="leftMargin">16dp</dimen>
-    <dimen name="topMargin">42dp</dimen>
+    <dimen name="topMargin">10dp</dimen>
     <dimen name="bottomMargin">5dp</dimen>
 
     <!-- Margins for the scroll view. These are different from the
