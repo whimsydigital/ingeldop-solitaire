@@ -9,6 +9,12 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
 /* Main activity for Ingeldop. The game is a single activity app, where all interaction
  * is done in the main activity. We have some popups and dialogs for things such as
  * errors, settings, and stats.  */
@@ -85,6 +91,11 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 
         // Try to load saved state
         restoreState(getString(R.string.saveFilename));
+
+        // Update button and scroll state if needed
+        dealButton.setEnabled(!game.gameOver());
+        dealButton.setEmpty(game.deckSize() == 0);
+        discardButton.setEnabled(!game.gameOver());
 
         // Update UI zoom based on saved or defaults
         doZoom(false, false);
@@ -220,21 +231,19 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      *
      */
     private void saveState(String filename) {
-//        // Build file contents
-//        StringBuilder out = new StringBuilder();
-//        out.append("game:" + game + '\n');
-//        out.append("scale:" + scale + '\n');
-//
-//        // Write to file
-//        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
-//        try {
-//            FileWriter writer = new FileWriter(file);
-//            writer.append(out.toString());
-//            writer.flush();
-//            writer.close();
-//        } catch (IOException e) {
-//            Log.e("saveState()", "ERROR writing file", e);
-//        }
+        // Build file contents
+        StringBuilder out = new StringBuilder();
+        out.append("game:" + game + '\n');
+        out.append("marginBetween:" + marginBetween + '\n');
+
+        // Write to file
+        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.append(out.toString());
+            writer.flush();
+            writer.close();
+        } catch (IOException ignored) { }
     }
 
 
@@ -242,31 +251,24 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      *
      */
     private void restoreState(String filename) {
-//        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
-//        try {
-//            // Read file into string
-//            Scanner reader = new Scanner(file);
-//            while (reader.hasNextLine()) {
-//                String s = reader.nextLine();
-//
-//                // Parse into fields
-//                String[] keyvalue = s.split(":");
-//                String key = keyvalue[0];
-//                String val = keyvalue[1];
-//
-//                // Extract saved state
-//                switch (key) {
-//                    case "scale": scale = Double.parseDouble(val); break;
-//                    case "game": game = Ingeldop.parseString(val); break;
-//                }
-//            }
-//
-//        } catch (FileNotFoundException e) {
-//            Log.i("restoreState()", "no saved state");
-//            newGame();
-//            scale = 1;
-//        }
-//        update();
+        File file = new File(this.getFilesDir(), filename);
+        try {
+            // Read file into string
+            Scanner reader = new Scanner(file);
+            while (reader.hasNextLine()) {
+                String s = reader.nextLine();
+
+                // Parse into fields
+                String[] keyValue = s.split(":");
+
+                // Extract saved state
+                switch (keyValue[0]) {
+                    case "game":          game          = Ingeldop.parseString(keyValue[1]);  break;
+                    case "marginBetween": marginBetween = Integer.parseInt(keyValue[1]);      break;
+                }
+            }
+
+        } catch (FileNotFoundException ignored) { }
     }
 
 
