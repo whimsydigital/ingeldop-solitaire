@@ -62,17 +62,17 @@ public class HandViewExpanded extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Get resources
-        int topMargin       = this.getResources().getDimensionPixelSize(R.dimen.topMargin);
-        int topScrollMargin = this.getResources().getDimensionPixelSize(R.dimen.topScrollMargin);
         this.overlap = Double.parseDouble(((IngeldopActivity)getContext()).getString(R.string.defaultOverlap));
+        double aspectRadio = 75.0/100.0;
+        double selRatio    = 1.0/3.0;
 
         int handHeight = MeasureSpec.getSize(heightMeasureSpec);
-        double aspectRadio = 75.0/100.0;
+
 
         // Calculate card size & padding
-        selPadding = topMargin - topScrollMargin;
-        cardHeight = handHeight - selPadding;
+        cardHeight = (int) (handHeight / (1 + aspectRadio*selRatio));
         cardWidth  = (int) (cardHeight*aspectRadio);
+        selPadding = handHeight - cardHeight;
 
         // Get reference to current game & calculate width
         Ingeldop game = ((IngeldopActivity)getContext()).game;

@@ -13,9 +13,8 @@
     android:paddingRight="0dp"
     android:background="@color/background">
 
-    <View
+    <Space
         android:id="@+id/dealSpace"
-        android:background="@color/disabled"
         compat:layout_constraintTop_toTopOf="parent"
         compat:layout_constraintLeft_toLeftOf="@id/dealButton"
         compat:layout_constraintRight_toRightOf="@id/dealButton"
@@ -23,9 +22,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp" />
 
-    <View
+    <Space
         android:id="@+id/deckHandSpace"
-        android:background="@color/disabled"
         compat:layout_constraintTop_toTopOf="@id/dealButton"
         compat:layout_constraintBottom_toBottomOf="@id/dealButton"
         compat:layout_constraintLeft_toRightOf="@id/dealButton"
@@ -72,7 +70,7 @@
     -->
     <HorizontalScrollView
         android:id="@+id/scrollView"
-        android:background="@color/disabled"
+        android:background="@color/background"
 
         android:layout_width="0dp"
         android:layout_height="0dp"
