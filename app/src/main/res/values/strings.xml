@@ -12,10 +12,10 @@
 
     <!-- Default values used for zooming margins. These are
          expressed as a fraction of the screen size. -->
-    <string name="marginBetweenFraction">0.2</string>
+    <string name="marginBetweenFraction">0.3</string>
     <string name="marginBetweenStepFraction">0.01</string>
     <string name="marginBetweenMinFraction">0.05</string>
-    <string name="marginBetweenMaxFraction">0.3</string>
+    <string name="marginBetweenMaxFraction">0.5</string>
 
 
     <!-- Filenames for settings and stats -->
