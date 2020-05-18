@@ -21,17 +21,14 @@
          an aspect ratio and the width of the spacer is tied to the
          width of the deal button, the height will change as we
          zoom in and out, resulting in the same fraction of a card
-         popping up irrespective of the size of the cards.
-
-         TODO: specify ratio in values file. -->
-    <Space
-        android:id="@+id/dealTopSpace"
-        compat:layout_constraintTop_toTopOf="parent"
-        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
-        compat:layout_constraintRight_toRightOf="@id/dealButton"
-        compat:layout_constraintDimensionRatio="3:1"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
+         popping up irrespective of the size of the cards.  -->
+    <Space android:id="@+id/dealTopSpace"
+           compat:layout_constraintTop_toTopOf="parent"
+           compat:layout_constraintLeft_toLeftOf="@id/dealButton"
+           compat:layout_constraintRight_toRightOf="@id/dealButton"
+           compat:layout_constraintDimensionRatio="@string/topSpaceRatio"
+           android:layout_width="0dp"
+           android:layout_height="0dp" />
 
 
     <!-- This spacer sits between the deal button and the hand view
@@ -42,17 +39,14 @@
          ratio with the height tied to the height of the deal button.
          Thus, when the deal button gets smaller on a zoom out, the
          width of the spacer gets smaller and the hand view moves
-         closer to the deal button.
-
-         TODO: specify ratio in values file. -->
-    <Space
-        android:id="@+id/dealRightSpace"
-        compat:layout_constraintTop_toTopOf="@id/dealButton"
-        compat:layout_constraintBottom_toBottomOf="@id/dealButton"
-        compat:layout_constraintLeft_toRightOf="@id/dealButton"
-        compat:layout_constraintDimensionRatio="1:6"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
+         closer to the deal button.  -->
+    <Space android:id="@+id/dealRightSpace"
+           compat:layout_constraintTop_toTopOf="@id/dealButton"
+           compat:layout_constraintBottom_toBottomOf="@id/dealButton"
+           compat:layout_constraintLeft_toRightOf="@id/dealButton"
+           compat:layout_constraintDimensionRatio="@string/rightSpaceRatio"
+           android:layout_width="0dp"
+           android:layout_height="0dp" />
 
 
     <!-- The button for dealing is placed in the top left corner,
@@ -60,15 +54,13 @@
          fixed aspect ratio to that of a standard playing card. Its
          height is constrained by the margin between it and the discard
          button below it. We set the padding to be zero so that the
-         source image is scaled to the full button size.
-
-         TODO: specify ratio in values file. -->
+         source image is scaled to the full button size.  -->
     <com.whimsydigital.ingeldop.DealButton
         android:id="@+id/dealButton"
         compat:layout_constraintTop_toBottomOf="@id/dealTopSpace"
         compat:layout_constraintBottom_toTopOf="@id/discardButton"
         compat:layout_constraintLeft_toLeftOf="parent"
-        compat:layout_constraintDimensionRatio="72:100"
+        compat:layout_constraintDimensionRatio="@string/dealButtonRatio"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="100dp"
@@ -83,22 +75,19 @@
          resize as the deal button changes size. The text on the button
          will also change size between the specified min and max sizes.
          Additionally, we fix the number of text lines to 1 to prevent
-         word breaks in the text.
-
-         TODO: specify ratio in values file.  -->
-    <Button
-        android:id="@+id/discardButton"
-        compat:layout_constraintBottom_toBottomOf="parent"
-        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
-        compat:layout_constraintRight_toRightOf="@id/dealButton"
-        compat:layout_constraintDimensionRatio="2:1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        compat:autoSizeTextType="uniform"
-        compat:autoSizeMinTextSize="3sp"
-        compat:autoSizeMaxTextSize="200sp"
-        android:maxLines="1"
-        android:text="@string/discardText" />
+         word breaks in the text.  -->
+    <Button android:id="@+id/discardButton"
+            compat:layout_constraintBottom_toBottomOf="parent"
+            compat:layout_constraintLeft_toLeftOf="@id/dealButton"
+            compat:layout_constraintRight_toRightOf="@id/dealButton"
+            compat:layout_constraintDimensionRatio="@string/discardButtonRatio"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            compat:autoSizeTextType="uniform"
+            compat:autoSizeMinTextSize="3sp"
+            compat:autoSizeMaxTextSize="200sp"
+            android:maxLines="1"
+            android:text="@string/discardText" />
 
 
     <!-- The hand is contained in a scroll view so that if the hand gets

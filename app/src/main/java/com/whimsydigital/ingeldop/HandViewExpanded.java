@@ -63,8 +63,10 @@ public class HandViewExpanded extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Get resources
         this.overlap = Double.parseDouble(((IngeldopActivity)getContext()).getString(R.string.defaultOverlap));
-        double aspectRadio = 75.0/100.0;
-        double selRatio    = 1.0/3.0;
+        String[] aspectRatioStr = ((IngeldopActivity) getContext()).getString(R.string.dealButtonRatio).split(":", 2);
+        String[] selRatioStr    = ((IngeldopActivity) getContext()).getString(R.string.topSpaceRatio).split(":", 2);
+        double aspectRadio = Double.parseDouble(aspectRatioStr[0])/Double.parseDouble(aspectRatioStr[1]);
+        double selRatio    = Double.parseDouble(selRatioStr[1])/Double.parseDouble(selRatioStr[0]);;
 
         int handHeight = MeasureSpec.getSize(heightMeasureSpec);
 
