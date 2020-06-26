@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,6 +24,8 @@ public class HandViewExpanded extends View {
     private Map<Card, Drawable> spritesheet;
     private Rect dstRect = new Rect();
 
+    IngeldopActivity context;
+
     private double overlap;
     private int cardHeight;
     private int cardWidth;
@@ -30,6 +33,8 @@ public class HandViewExpanded extends View {
 
     public HandViewExpanded(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = (IngeldopActivity) context;
+        this.overlap = Double.parseDouble(context.getString(R.string.defaultOverlap));
 
         // Import card images from resources and
         // save them to a map for access in draw
@@ -37,12 +42,11 @@ public class HandViewExpanded extends View {
         for (Card c : Card.values()) {
             String strCard  = c.toString().toLowerCase();
             String strType  = "drawable";
-            String strPkg   = getContext().getPackageName();
+            String strPkg   = context.getPackageName();
             int resourceID  = getResources().getIdentifier(strCard, strType, strPkg);
             Drawable resImg = getResources().getDrawable(resourceID, null);
             spritesheet.put(c, resImg);
         }
-
     }
 
     /* Calculate the destination rect for where a card in the hand should be placed.
@@ -62,20 +66,16 @@ public class HandViewExpanded extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Get resources
-        int topMargin       = this.getResources().getDimensionPixelSize(R.dimen.topMargin);
-        int topScrollMargin = this.getResources().getDimensionPixelSize(R.dimen.topScrollMargin);
-        this.overlap = Double.parseDouble(((IngeldopActivity)getContext()).getString(R.string.defaultOverlap));
-
         int handHeight = MeasureSpec.getSize(heightMeasureSpec);
-        double aspectRadio = 75.0/100.0;
+        View dealButton = context.findViewById(R.id.dealButton);
 
         // Calculate card size & padding
-        selPadding = topMargin - topScrollMargin;
-        cardHeight = handHeight - selPadding;
-        cardWidth  = (int) (cardHeight*aspectRadio);
+        cardHeight = dealButton.getMeasuredHeight();
+        cardWidth  = dealButton.getMeasuredWidth();
+        selPadding = handHeight - cardHeight;
 
-        // Get reference to current game & calculate width
-        Ingeldop game = ((IngeldopActivity)getContext()).game;
+        // Get reference to current game & calculate total width
+        Ingeldop game = context.game;
         int numCards  = game.handSize();
         int handWidth = (int) (numCards*cardWidth - (numCards-1)*cardWidth*overlap);
 
@@ -94,7 +94,7 @@ public class HandViewExpanded extends View {
         canvas.drawColor(this.getResources().getColor(R.color.background));
 
         // Get reference to current game
-        Ingeldop game = ((IngeldopActivity)getContext()).game;
+        Ingeldop game = context.game;
 
         // Iterate through hand and draw each card
         for (int i = 0; i < game.handSize(); i++) {
@@ -116,7 +116,7 @@ public class HandViewExpanded extends View {
             e.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int) e.getX();
             int y = (int) e.getY();
-            Ingeldop game = ((IngeldopActivity) getContext()).game;
+            Ingeldop game = context.game;
 
             // Check if we clicked on any of the cards in the hand
             for (int i = game.handSize() - 1; i >= 0; i--) {

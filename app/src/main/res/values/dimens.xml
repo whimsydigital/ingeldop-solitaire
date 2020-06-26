@@ -5,15 +5,6 @@
     <dimen name="topMargin">10dp</dimen>
     <dimen name="bottomMargin">5dp</dimen>
 
-    <!-- Margins for the scroll view. These are different from the
-         normal margins because the cards move within the scroll view.
-         When selected, the cards should move up by the difference
-         between the topScrollMargin and the topMargin. Making the
-         right margin of the scroll view small allows the cards in
-         the hand to appear to be going off screen to the right. -->
-    <dimen name="topScrollMargin">10dp</dimen>
-    <dimen name="rightScrollMargin">0dp</dimen>
-
     <!-- Default card destination size is based on standard playing card
          sizes. These sizes will be scaled using a scaling parameter.
          The default scaling parameter will make them fit the device,

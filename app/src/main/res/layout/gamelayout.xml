@@ -13,79 +13,106 @@
     android:paddingRight="0dp"
     android:background="@color/background">
 
-    <View
-        android:id="@+id/dealSpace"
-        android:background="@color/disabled"
-        compat:layout_constraintTop_toTopOf="parent"
-        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
-        compat:layout_constraintRight_toRightOf="@id/dealButton"
-        compat:layout_constraintDimensionRatio="3:1"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
 
-    <View
-        android:id="@+id/deckHandSpace"
-        android:background="@color/disabled"
-        compat:layout_constraintTop_toTopOf="@id/dealButton"
-        compat:layout_constraintBottom_toBottomOf="@id/dealButton"
-        compat:layout_constraintLeft_toRightOf="@id/dealButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        compat:layout_constraintDimensionRatio="1:6" />
+    <!-- This is a spacer placed at the top of the deal
+         button. It is constrained to have a fixed
+         aspect ratio and the same width as the deal button.
+         This means that as the width of the deal button
+         changes due to zooming, the height of the spacer will
+         also change. This results in the margin between the
+         the top of the deal button and the top of screen
+         changing with the zoom level.  -->
+    <View android:id="@+id/dealSpace"
+          compat:layout_constraintTop_toTopOf="parent"
+          compat:layout_constraintLeft_toLeftOf="@id/dealButton"
+          compat:layout_constraintRight_toRightOf="@id/dealButton"
+          compat:layout_constraintDimensionRatio="3:1"
+          android:layout_width="0dp"
+          android:layout_height="0dp" />
 
+
+    <!-- This is a spacer placed to the right of the
+         deal button. It is constrained to have a fixed
+         aspect ratio and the same height as the deal button.
+         This means that as the height of the deal button
+         changes due to zooming, the height of the spacer
+         will also change. To maintain the aspect ratio, the
+         width will change, resulting in the margin between
+         the deal button and the hand view changing with
+         the zoom level.  -->
+    <View android:id="@+id/deckHandSpace"
+          compat:layout_constraintTop_toTopOf="@id/dealButton"
+          compat:layout_constraintBottom_toBottomOf="@id/dealButton"
+          compat:layout_constraintLeft_toRightOf="@id/dealButton"
+          compat:layout_constraintDimensionRatio="1:6"
+          android:layout_width="0dp"
+          android:layout_height="0dp" />
+
+
+    <!-- The deal button is placed in the upper left corner of
+         the play area, below the top spacer and above the
+         discard button. It is constrained by a fixed aspect
+         ratio (that of a card), and changes size based on
+         the margin between it and the discard button. When
+         the margin increases (zoom out) the deal button's
+         height decreases, causing its width to decrease and
+         for the sizes of the spacers to decrease. When the
+         margin decreases (zoom in), the opposite happens. -->
     <com.whimsydigital.ingeldop.DealButton
         android:id="@+id/dealButton"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
-
         android:padding="0dp"
         android:layout_marginBottom="100dp"
         compat:layout_constraintLeft_toLeftOf="parent"
         compat:layout_constraintTop_toBottomOf="@id/dealSpace"
         compat:layout_constraintBottom_toTopOf="@id/discardButton"
         compat:layout_constraintDimensionRatio="72:100"
-
         android:scaleType="fitCenter"
         android:src="@drawable/dealbutton"/>
 
-    <Button
-        android:id="@+id/discardButton"
 
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        compat:layout_constraintDimensionRatio="2:1"
+    <!-- The discard button is placed in the bottom left
+         corner of the play area, below the deal button
+         and separated by a dynamic margin. It also has
+         a fixed aspect ratio and is constrained to have
+         the same width as the deal button. Additionally,
+         the text scales with the size of the button. -->
+    <Button android:id="@+id/discardButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            compat:layout_constraintLeft_toLeftOf="@id/dealButton"
+            compat:layout_constraintRight_toRightOf="@id/dealButton"
+            compat:layout_constraintBottom_toBottomOf="parent"
+            compat:layout_constraintDimensionRatio="2:1"
+            compat:autoSizeTextType="uniform"
+            compat:autoSizeMinTextSize="3sp"
+            compat:autoSizeMaxTextSize="200sp"
+            android:maxLines="1"
+            android:text="@string/discardText" />
 
-        compat:autoSizeTextType="uniform"
-        compat:autoSizeMinTextSize="3sp"
-        compat:autoSizeMaxTextSize="200sp"
-        android:maxLines="1"
-        compat:layout_constraintLeft_toLeftOf="@id/dealButton"
-        compat:layout_constraintRight_toRightOf="@id/dealButton"
-        compat:layout_constraintBottom_toBottomOf="parent"
 
-        android:text="@string/discardText" />
-
-    <!--
-        - Set layout width and height to 0dp so they expand to constraints
-        -
-    -->
+    <!-- The hand view is contained in a horizontal scroll
+         view so that an overflow of cards in the hand can
+         still be viewed and interacted with. This scroll
+         view is placed in the upper right of the play area,
+         to the right of the deal button and spacer. It
+         stretches from the bottom of the deal button to
+         the top of the top spacer. This means the height of
+         the top spacer is what gives the cards in the hand
+         room to pop up when selected. -->
     <HorizontalScrollView
         android:id="@+id/scrollView"
-        android:background="@color/disabled"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginRight="@dimen/rightScrollMargin"
-
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbarFadeDuration="0"
-        android:scrollbarSize="10dp"
-
+        android:layout_marginRight="0dp"
         compat:layout_constraintBottom_toBottomOf="@+id/dealButton"
         compat:layout_constraintLeft_toRightOf="@+id/deckHandSpace"
         compat:layout_constraintRight_toRightOf="parent"
-        compat:layout_constraintTop_toTopOf="parent">
+        compat:layout_constraintTop_toTopOf="parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarSize="10dp" >
 
         <com.whimsydigital.ingeldop.HandViewExpanded
             android:id="@+id/handView"
@@ -93,6 +120,8 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
+
+    <!-- The menu in the bottom right -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
