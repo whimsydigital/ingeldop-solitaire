@@ -8,6 +8,10 @@
     <string name="gameWinText">You Won!</string>
 
 
+    <string name="topSpaceRatio">3:1</string>
+    <string name="rightSpaceRatio">1:6</string>
+    <string name="dealButtonRatio">72:100</string>
+    <string name="discardButtonRatio">2:1</string>
     <string name="defaultOverlap">0.8</string>
 
     <!-- Default values used for zooming margins. These are

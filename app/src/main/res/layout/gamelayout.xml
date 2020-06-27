@@ -26,7 +26,7 @@
           compat:layout_constraintTop_toTopOf="parent"
           compat:layout_constraintLeft_toLeftOf="@id/dealButton"
           compat:layout_constraintRight_toRightOf="@id/dealButton"
-          compat:layout_constraintDimensionRatio="3:1"
+           compat:layout_constraintDimensionRatio="@string/topSpaceRatio"
           android:layout_width="0dp"
           android:layout_height="0dp" />
 
@@ -44,7 +44,7 @@
           compat:layout_constraintTop_toTopOf="@id/dealButton"
           compat:layout_constraintBottom_toBottomOf="@id/dealButton"
           compat:layout_constraintLeft_toRightOf="@id/dealButton"
-          compat:layout_constraintDimensionRatio="1:6"
+           compat:layout_constraintDimensionRatio="@string/rightSpaceRatio"
           android:layout_width="0dp"
           android:layout_height="0dp" />
 
@@ -67,7 +67,7 @@
         compat:layout_constraintLeft_toLeftOf="parent"
         compat:layout_constraintTop_toBottomOf="@id/dealSpace"
         compat:layout_constraintBottom_toTopOf="@id/discardButton"
-        compat:layout_constraintDimensionRatio="72:100"
+        compat:layout_constraintDimensionRatio="@string/dealButtonRatio"
         android:scaleType="fitCenter"
         android:src="@drawable/dealbutton"/>
 
@@ -84,7 +84,7 @@
             compat:layout_constraintLeft_toLeftOf="@id/dealButton"
             compat:layout_constraintRight_toRightOf="@id/dealButton"
             compat:layout_constraintBottom_toBottomOf="parent"
-            compat:layout_constraintDimensionRatio="2:1"
+            compat:layout_constraintDimensionRatio="@string/discardButtonRatio"
             compat:autoSizeTextType="uniform"
             compat:autoSizeMinTextSize="3sp"
             compat:autoSizeMaxTextSize="200sp"
@@ -120,19 +120,32 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
-
-    <!-- The menu in the bottom right -->
+    <!-- The various buttons for new game, zoom, etc. are contained in
+         this linear layout at the bottom right. It is constrained to
+         match the discard button in height, and take up a fixed
+         percentage of the screen in width. The zoom limits should
+         make sure that the discard button never grows enough in width
+         to intersect these buttons. Additionally, we set the gravity
+         to center to make sure the button are evenly distributed. -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginRight="10dp"
         compat:layout_constraintTop_toTopOf="@id/discardButton"
         compat:layout_constraintBottom_toBottomOf="parent"
         compat:layout_constraintRight_toRightOf="parent"
         compat:layout_constraintWidth_default="percent"
         compat:layout_constraintWidth_percent=".5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="10dp"
         android:gravity="center">
 
+        <!-- The game menu consists of a set of image buttons with
+             icons for each action. They are set to have width to match
+             the icons but fill the parent in height so that they scale
+             when zooming because of the height change of the discard
+             button. The images are scaled to fit in the center of the
+             buttons, and the background is set to match the app
+             background. Additionally, we give each button an equal
+             weight so they are distributed evenly in the parent layout.  -->
         <ImageButton
             android:id="@+id/newGameButton"
             android:layout_width="wrap_content"
@@ -178,6 +191,5 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:layout_weight="1"/>
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
