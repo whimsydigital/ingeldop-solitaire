@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ingeldop_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.whimsydigital.ingeldop.IngeldopActivity"
+        <activity android:name=".IngeldopActivity"
                   android:screenOrientation="landscape"
                   android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
                   tools:ignore="LockedOrientationActivity">
@@ -18,6 +18,11 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".StatsActivity"
+                  android:label="Ingeldop Play Statistics">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                       android:value="com.whimsydigital.ingeldop.IngeldopActivity" />
         </activity>
     </application>
 </manifest>

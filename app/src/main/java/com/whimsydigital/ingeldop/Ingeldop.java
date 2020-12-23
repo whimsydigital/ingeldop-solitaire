@@ -286,59 +286,48 @@ public class Ingeldop {
 
 
     /**
-     * Get a string representation of an Ingeldop game.
+     * Obtain an Interable of Cards in the deck
      *
-     * We convert an Ingeldop game into a string representation of the form:
-     *     dealt=false;deck=[HEART_7, ...];hand=[SPADE_K, ...];sel=[false, ...];  */
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append("dealt=" + dealt + ';');
-        out.append("deck=" + deck.toString() + ';');
-        out.append("hand=" + hand.toString() + ';');
-        out.append("sel="  + sel.toString()  + ';');
-        return out.toString();
+     * Provides a read only view of the Cards in the
+     * deck by returning an Iterable<Card>.
+     */
+    public Iterable<Card> deck() {
+        return Collections.unmodifiableList(this.deck);
     }
 
 
     /**
-     * Get an Ingeldop game from a string representation.
+     * Obtain an Interable of Cards in the hand
      *
-     * We construct and return a new Ingeldop object based on the
-     * given string representation. The string argument is
-     * assumed to be of the form given by toString(). An Ingeldop
-     * object constructed this way will be equal to object whose
-     * toString() method was originally called.  */
-    public static Ingeldop parseString(String in) {
-        // Split deck, hand, sel from string
-        String[] parts = in.split(";");
-        String strDealt = parts[0];
-        String strDeck  = parts[1];
-        String strHand  = parts[2];
-        String strSel   = parts[3];
+     * Provides a read only view of the Cards in the
+     * hand by returning an Iterable<Card>.
+     */
+    public Iterable<Card> hand() {
+        return Collections.unmodifiableList(this.hand);
+    }
 
-        // Get contents of each as String[]
-        strDeck  = strDeck.substring(strDeck.indexOf('[')+1, strDeck.indexOf(']'));
-        strHand  = strHand.substring(strHand.indexOf('[')+1, strHand.indexOf(']'));
-        strSel   = strSel.substring(strSel.indexOf('[')+1, strSel.indexOf(']'));
-        strDealt = strDealt.substring(strDealt.indexOf('=')+1);
 
-        // Split to get individual values
-        String[] arrDeck = (strDeck.isEmpty()) ? new String[0] : strDeck.split(",");
-        String[] arrHand = (strHand.isEmpty()) ? new String[0] : strHand.split(",");
-        String[] arrSel  = (strSel.isEmpty())  ? new String[0] : strSel.split(",");
+    /**
+     * Obtain an Interable of Card selections
+     *
+     * Provides a read only view of the Cards in the
+     * hand that are selected by returning an
+     * Iterable<Boolean> where each element signals
+     * if a Card in the hand is selected or not.
+     */
+    public Iterable<Boolean> sel() {
+        return Collections.unmodifiableList(this.sel);
+    }
 
-        // Initialize seed arrays
-        Card[] seedDeck = new Card[arrDeck.length];
-        Card[] seedHand = new Card[arrHand.length];
-        Boolean[] seedSel = new Boolean[arrSel.length];
-        boolean seedDealt = Boolean.parseBoolean(strDealt);
 
-        // Convert values and save to seed arrays
-        for (int i = 0; i < arrDeck.length; i++) seedDeck[i] = Card.valueOf(arrDeck[i].trim());
-        for (int i = 0; i < arrHand.length; i++) seedHand[i] = Card.valueOf(arrHand[i].trim());
-        for (int i = 0; i < arrSel.length; i++)  seedSel[i] = Boolean.parseBoolean(arrSel[i].trim());
-
-        return new Ingeldop(seedDeck, seedHand, seedSel, seedDealt);
+    /**
+     * Query if a card has been dealt to the hand.
+     *
+     * Returns a Boolean flag representing if a card
+     * has been dealt from the deck into the hand
+     * since the last discard.  */
+    public Boolean dealt() {
+        return dealt;
     }
 
 

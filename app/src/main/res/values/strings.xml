@@ -7,7 +7,15 @@
     <string name="gameOverText">Game Over: %1$d cards left</string>
     <string name="gameWinText">You Won!</string>
 
+    <!-- Labels used for displaying game stats-->
+    <string name="numWinsText">Games Won: %1$d</string>
+    <string name="numLossText">Games Lost: %1$d</string>
+    <string name="winPercentText">Win Rate: %1$.2f%%</string>
+    <string name="bestHandText">Best Game: %1$d</string>
+    <string name="worstHandText">Worst Game: %1$d</string>
+    <string name="avgHandText">Avg Game: %1$.2f</string>
 
+    <!-- Aspect ratios for various UI elements -->
     <string name="topSpaceRatio">3:1</string>
     <string name="rightSpaceRatio">1:6</string>
     <string name="dealButtonRatio">72:100</string>
@@ -21,8 +29,23 @@
     <string name="marginBetweenMinFraction">0.05</string>
     <string name="marginBetweenMaxFraction">0.5</string>
 
+    <!-- Shared Preferences Keys -->
+    <string name="pref_key_margin">MARGIN</string>
+    <string name="pref_key_deck">DECK</string>
+    <string name="pref_key_hand">HAND</string>
+    <string name="pref_key_sel">SEL</string>
+    <string name="pref_key_dealt">DEALT</string>
+    <string name="pref_key_numGames">NUM_GAMES</string>
+    <string name="pref_key_numWins">NUM_WIN</string>
+    <string name="pref_key_numLoss">NUM_LOSS</string>
+    <string name="pref_key_numCards">NUM_CARDS</string>
 
-    <!-- Filenames for settings and stats -->
-    <string name="saveFilename">saveState</string>
-    <string name="statsFilename">stats</string>
+    <!-- Stats Intent Extra Keys -->
+    <string name="intent_extra_numGames">NUM_GAMES</string>
+    <string name="intent_extra_numWins">NUM_WIN</string>
+    <string name="intent_extra_numLoss">NUM_LOSS</string>
+    <string name="intent_extra_numCards">NUM_CARDS</string>
+    <string name="intent_extra_numHist">NUM_HIST</string>
+    <string name="intent_extra_hist">HIST</string>
+
 </resources>

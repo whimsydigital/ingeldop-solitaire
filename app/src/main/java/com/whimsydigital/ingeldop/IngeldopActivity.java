@@ -1,6 +1,9 @@
 package com.whimsydigital.ingeldop;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +12,11 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 
 /* Main activity for Ingeldop. The game is a single activity app, where all interaction
  * is done in the main activity. We have some popups and dialogs for things such as
@@ -26,6 +29,13 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     private int marginBetweenStep;
     private int marginBetweenMin;
     private int marginBetweenMax;
+
+    // Stats
+    private int numGames;
+    private int numWins;
+    private int numLoss;
+    private int[] numCards;
+    private ArrayList<int[]> gameHist;
 
     // UI Elements
     HorizontalScrollView scrollView;
@@ -86,11 +96,9 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         marginBetweenMin  = (int) (screenHeight*marginBetweenMinFraction);
         marginBetweenMax  = (int) (screenHeight*marginBetweenMaxFraction);
 
-        // Initialize game in case no saved game
-        game = new Ingeldop();
-
-        // Try to load saved state
-        restoreState(getString(R.string.saveFilename));
+        // Try to load saved state and stats
+        loadState();
+        loadStats();
 
         // Update button and scroll state if needed
         dealButton.setEnabled(!game.gameOver());
@@ -105,12 +113,12 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.dealButton:    doDeal();    break;
-            case R.id.discardButton: doDiscard(); break;
-            case R.id.newGameButton: newGame();   break;
-            case R.id.zoomInButton:  doZoom(true, false); break;
-            case R.id.zoomOutButton: doZoom(false, true); break;
-            case R.id.statsButton:    break;
+            case R.id.dealButton:     doDeal();    break;
+            case R.id.discardButton:  doDiscard(); break;
+            case R.id.newGameButton:  newGame();   break;
+            case R.id.statsButton:    doStats();   break;
+            case R.id.zoomInButton:   doZoom(true, false); break;
+            case R.id.zoomOutButton:  doZoom(false, true); break;
             case R.id.settingsButton: break;
         }
     }
@@ -164,10 +172,14 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      * deal button, and requesting a layout update of the
      * hand view. We request a layout update instead of just
      * a redraw because clearing the hand will change the size
-     * and force the containing scroll view to remove scroll bars. */
+     * and force the containing scroll view to remove scroll bars.
+     * Additionally, the numGames counter is updated and stats
+     * are saved to disk.  */
     private void newGame() {
         // Start a new game
         this.game = new Ingeldop();
+        numGames++;
+        saveStats();
 
         // Reset deal & discard button state
         dealButton.setEnabled(true);
@@ -211,9 +223,9 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      *
      * If the game is over we disable the deal and discard buttons and
      * display a message to the player about the number of cards left
-     * in the hand (or a win message of none left).
-     *
-     * TODO: save game statistics  */
+     * in the hand (or a win message of none left). Additionally, the
+     * counters for winning/losing a game are updated accordingly and
+     * the statistics are saved to disk.  */
     private void doGameOver() {
         // Disable deal & discard buttons
         dealButton.setEnabled(false);
@@ -221,61 +233,192 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 
         // Show game over message
         String msg;
-        if (game.handSize() == 0) msg = getString(R.string.gameWinText);
-        else                      msg = getString(R.string.gameOverText, game.handSize());
+        if (game.handSize() == 0) {
+            msg = getString(R.string.gameWinText);
+            numWins++;
+            numCards[0]++;
+        } else {
+            msg = getString(R.string.gameOverText, game.handSize());
+            numLoss++;
+            numCards[game.handSize()]++;
+        }
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        saveStats();
     }
 
 
     /**
+     * Launch the statistics viewing page.
      *
-     */
-    private void saveState(String filename) {
-        // Build file contents
-        StringBuilder out = new StringBuilder();
-        out.append("game:" + game + '\n');
-        out.append("marginBetween:" + marginBetween + '\n');
+     * Will launch the Activity for viewing game statistics as a new
+     * Intent. We pass game statistics to the new Intent via the
+     * putExtra() functions. This function sets up the new intent,
+     * passes in needed stats, and starts it as a new Activity.  */
+    private void doStats() {
 
-        // Write to file
-        File file = new File(this.getFilesDir(), getString(R.string.saveFilename));
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.append(out.toString());
-            writer.flush();
-            writer.close();
-        } catch (IOException ignored) { }
+        int[] game0 = {0,0,0,0,8,13,21};
+        int[] game1 = {1,2,11,10,11,5,6};
+        gameHist.add(game0);
+        gameHist.add(game1);
+
+
+        Intent intent = new Intent(this, StatsActivity.class);
+        intent.putExtra(getString(R.string.intent_extra_numGames), numGames);
+        intent.putExtra(getString(R.string.intent_extra_numWins), numWins);
+        intent.putExtra(getString(R.string.intent_extra_numLoss), numLoss);
+        intent.putExtra(getString(R.string.intent_extra_numCards), numCards);
+
+
+        intent.putExtra(getString(R.string.intent_extra_numHist), gameHist.size());
+        for (int i =0; i < gameHist.size(); i++) {
+            intent.putExtra(getString(R.string.intent_extra_hist) + "_" + i, gameHist.get(i));
+        }
+
+        startActivity(intent);
     }
 
 
     /**
+     * Save game statistics to persistent storage.
      *
+     * Whenever the app is closed or suspended, we save the game play
+     * statistics to the Android SharedPreferences so that they
+     * can be restored when the app is resumed or re-launched. The
+     * variables that are saved are:
+     *
+     *    - numGames = the total number of games played
+     *    - numWins  = the number of games won
+     *    - numLoss  = the number of games lost
+     *    - numCards = an array of counts for the number of games that
+     *                 resulted in a specific number of cards left in
+     *                 the hand. Indices represent number of cards in
+     *                 the hand, values represent the number of games.
      */
-    private void restoreState(String filename) {
-        File file = new File(this.getFilesDir(), filename);
+    private void saveStats() {
+
+        JSONArray jsonNumCards  = new JSONArray();
+        for (int c : numCards) jsonNumCards.put(c);
+
+        SharedPreferences.Editor editor = this.getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putInt(getString(R.string.pref_key_numGames), numGames);
+        editor.putInt(getString(R.string.pref_key_numWins), numWins);
+        editor.putInt(getString(R.string.pref_key_numLoss), numLoss);
+        editor.putString(getString(R.string.pref_key_numCards), jsonNumCards.toString());
+        editor.apply();
+    }
+
+
+    /**
+     * Load game statistics from persistent storage
+     *
+     * Whenever the app is created or resumed, we load the game stats
+     * from the Android SharedPreferences and restore the stats tracking
+     * variables to how they were before we closed or suspended. The format
+     * and keys for the saved stats are described in the saveStats function doc.
+     */
+    private void loadStats() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        numGames = sharedPref.getInt(getString(R.string.pref_key_numGames), 0);
+        numWins  = sharedPref.getInt(getString(R.string.pref_key_numWins), 0);
+        numLoss  = sharedPref.getInt(getString(R.string.pref_key_numLoss), 0);
+
         try {
-            // Read file into string
-            Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
-                String s = reader.nextLine();
+            JSONArray numCardsJson = new JSONArray(sharedPref.getString(getString(R.string.pref_key_numCards), "ERROR"));
+            numCards = new int[52];
+            for (int i = 0; i < numCardsJson.length(); i++) numCards[i] = numCardsJson.getInt(i);
+        } catch (JSONException e) {
+            numCards = new int[52];
+        }
 
-                // Parse into fields
-                String[] keyValue = s.split(":");
+        gameHist = new ArrayList<int[]>();
+    }
 
-                // Extract saved state
-                switch (keyValue[0]) {
-                    case "game":          game          = Ingeldop.parseString(keyValue[1]);  break;
-                    case "marginBetween": marginBetween = Integer.parseInt(keyValue[1]);      break;
-                }
-            }
 
-        } catch (FileNotFoundException ignored) { }
+    /**
+     * Save the state of the app to persistent storage.
+     *
+     * Whenever the app is closed or suspended, the state of various
+     * variables is saved to the Android SharedPreferences so that they
+     * can be restored when the app is resumed or re-launched. The variables
+     * that are saved are:
+     *
+     *     - marginBetween = an integer denoting the space between deal and discard
+     *                       buttons. Used to save zoom level.
+     *     - game.deck = a JSON array of cards in the game deck
+     *     - game.hand = a JSON array of cards in the game hand
+     *     - game.sel = a JSON array of booleans denoting if a given card in the hand
+     *                  has been selected or not. True means selected.
+     *     - game.dealt = a boolean indicating that a card has been dealt and a discard
+     *                    can happen. This prevents double discards from happening.
+     *
+     * Each of these is saved with a corresponding key as defined in
+     * the string resources.
+     */
+    private void saveState() {
+        SharedPreferences.Editor editor = this.getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putInt(getString(R.string.pref_key_margin), marginBetween);
+
+        // Serialize the Ingeldop game as a JSON string
+        JSONArray jsonDeck  = new JSONArray();
+        JSONArray jsonHand  = new JSONArray();
+        JSONArray jsonSel   = new JSONArray();
+        for (Card c    : game.deck()) jsonDeck.put(c);
+        for (Card c    : game.hand()) jsonHand.put(c);
+        for (Boolean s : game.sel())  jsonSel.put(s);
+
+        editor.putString(getString(R.string.pref_key_deck),  jsonDeck.toString());
+        editor.putString(getString(R.string.pref_key_hand),  jsonHand.toString());
+        editor.putString(getString(R.string.pref_key_sel),   jsonSel.toString());
+        editor.putBoolean(getString(R.string.pref_key_dealt), game.dealt());
+        editor.apply();
+    }
+
+
+    /**
+     * Load the state of the app from persistent storage
+     *
+     * Whenever the app is created or resumed, we load the state
+     * from the Android SharedPreferences and restore the state to
+     * how it was before we closed or suspended. The format and keys
+     * for the saved state are described in the saveState function doc.
+     */
+    private void loadState() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        // Get the zoom margin, using the default value as a backup
+        marginBetween = sharedPref.getInt(getString(R.string.pref_key_margin), marginBetween);
+
+        // Try to load a saved game; if anything goes wrong, create a new game
+        try {
+            // The deck, hand, and sel are store as JSON arrays
+            JSONArray jsonDeck = new JSONArray(sharedPref.getString(getString(R.string.pref_key_deck), "ERROR"));
+            JSONArray jsonHand = new JSONArray(sharedPref.getString(getString(R.string.pref_key_hand), "ERROR"));
+            JSONArray jsonSel = new JSONArray(sharedPref.getString(getString(R.string.pref_key_sel), "ERROR"));
+
+            // Convert the elements from strings to Card or Boolean
+            Card[] deck   = new Card[jsonDeck.length()];
+            Card[] hand   = new Card[jsonHand.length()];
+            Boolean[] sel = new Boolean[jsonSel.length()];
+            for (int i = 0; i < jsonDeck.length(); i++) deck[i] = Card.valueOf(jsonDeck.getString(i));
+            for (int i = 0; i < jsonHand.length(); i++) hand[i] = Card.valueOf(jsonHand.getString(i));
+            for (int i = 0; i < jsonHand.length(); i++) sel[i]  = jsonSel.getBoolean(i);
+
+            // Get the dealt parameter and assign the game to the saved game
+            boolean dealt = sharedPref.getBoolean(getString(R.string.pref_key_dealt), false);
+            game = new Ingeldop(deck, hand, sel, dealt);
+
+        } catch (JSONException e) {
+            newGame();
+        }
     }
 
 
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-        saveState(getString(R.string.saveFilename));
+        saveState();
+        saveStats();
     }
 
 }
