@@ -12,9 +12,9 @@ public class Ingeldop {
     /**
      *
      */
-    private List<Card> deck;
-    private List<Card> hand;
-    private List<Boolean> sel;
+    private final List<Card> deck;
+    private final List<Card> hand;
+    private final List<Boolean> sel;
     private boolean dealt;
 
 
@@ -27,9 +27,9 @@ public class Ingeldop {
      * duplicate cards or number of decks used. We mostly
      * use this for unit tests and loading saved states. */
     Ingeldop(Card[] seedDeck, Card[] seedHand, Boolean[] seedSel, boolean seedDealt) {
-        this.deck = new ArrayList<Card>(Arrays.asList(seedDeck));
-        this.hand = new ArrayList<Card>(Arrays.asList(seedHand));
-        this.sel = new ArrayList<Boolean>(Arrays.asList(seedSel));
+        this.deck = new ArrayList<>(Arrays.asList(seedDeck));
+        this.hand = new ArrayList<>(Arrays.asList(seedHand));
+        this.sel = new ArrayList<>(Arrays.asList(seedSel));
         this.dealt = seedDealt;
     }
 
@@ -40,11 +40,11 @@ public class Ingeldop {
      * This will initialize a new game with an
      * empty hand and a randomly shuffled deck. */
     Ingeldop() {
-        this.deck = new ArrayList<Card>(Arrays.asList(Card.values()));  // Default un-shuffled deck
-        Collections.shuffle(this.deck); // Shuffle deck
-        this.hand = new ArrayList<Card>(52);
-        this.sel = new ArrayList<Boolean>(52);
+        this.deck = new ArrayList<>(Arrays.asList(Card.values()));  // Default un-shuffled deck
+        this.hand = new ArrayList<>(52);
+        this.sel = new ArrayList<>(52);
         this.dealt = false;
+        Collections.shuffle(this.deck); // Shuffle deck
     }
 
 
