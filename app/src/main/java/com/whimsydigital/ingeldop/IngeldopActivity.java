@@ -47,7 +47,6 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     View zoomInButton;
     View zoomOutButton;
     View statsButton;
-    View settingsButton;
     View handView;
 
     // Layout params used for zooming
@@ -70,7 +69,6 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         zoomInButton   = findViewById(R.id.zoomInButton);
         zoomOutButton  = findViewById(R.id.zoomOutButton);
         statsButton    = findViewById(R.id.statsButton);
-        settingsButton = findViewById(R.id.settingsButton);
         handView       = findViewById(R.id.handView);
 
         // Save layout params for zooming
@@ -83,7 +81,6 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         zoomInButton.setOnClickListener(this);
         zoomOutButton.setOnClickListener(this);
         statsButton.setOnClickListener(this);
-        settingsButton.setOnClickListener(this);
 
         // Get info needed to calculate zoom margins
         final int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -121,7 +118,6 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
             case R.id.statsButton:    doStats();   break;
             case R.id.zoomInButton:   doZoom(true, false); break;
             case R.id.zoomOutButton:  doZoom(false, true); break;
-            case R.id.settingsButton: break;
         }
     }
 
