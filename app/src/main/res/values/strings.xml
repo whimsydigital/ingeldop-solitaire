@@ -39,6 +39,7 @@
     <string name="pref_key_numWins">NUM_WIN</string>
     <string name="pref_key_numLoss">NUM_LOSS</string>
     <string name="pref_key_numCards">NUM_CARDS</string>
+    <string name="pref_key_hist">HIST</string>
 
     <!-- Stats Intent Extra Keys -->
     <string name="intent_extra_numGames">NUM_GAMES</string>

@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 /* Main activity for Ingeldop. The game is a single activity app, where all interaction
@@ -35,7 +36,8 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
     private int numWins;
     private int numLoss;
     private int[] numCards;
-    private ArrayList<int[]> gameHist;
+    private LinkedList<ArrayList<Integer>> gameHist;
+    private final int MAX_GAME_HIST = 10;
 
     // UI Elements
     HorizontalScrollView scrollView;
@@ -135,6 +137,7 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      * game over logic.  */
     private void doDeal() {
         game.deal();                                // Do the deal
+        gameHist.getLast().add(game.handSize());    // Update game history
         handView.requestLayout();                   // Update hand
         scrollView.fullScroll(View.FOCUS_RIGHT);    // Scroll to the right on deal
         dealButton.setEmpty(game.deckSize() == 0);  // Update button state if empty
@@ -155,9 +158,10 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      * TODO: catch different exception types for different discard fails  */
     private void doDiscard() {
         try {
-            game.discard();                     // Do the discard
-            handView.requestLayout();           // Update hand
-            if (game.gameOver()) doGameOver();  // Handle game over
+            game.discard();                           // Do the discard
+            gameHist.getLast().add(game.handSize());  // Update game history
+            handView.requestLayout();                 // Update hand
+            if (game.gameOver()) doGameOver();        // Handle game over
         } catch (DiscardException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -179,6 +183,10 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         // Start a new game
         this.game = new Ingeldop();
         numGames++;
+
+        if (gameHist.size() >= MAX_GAME_HIST) gameHist.removeFirst();
+        gameHist.add(new ArrayList<Integer>(game.deckSize()));
+
         saveStats();
 
         // Reset deal & discard button state
@@ -255,23 +263,17 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      * putExtra() functions. This function sets up the new intent,
      * passes in needed stats, and starts it as a new Activity.  */
     private void doStats() {
-
-        int[] game0 = {0,0,0,0,8,13,21};
-        int[] game1 = {1,2,11,10,11,5,6};
-        gameHist.add(game0);
-        gameHist.add(game1);
-
-
         Intent intent = new Intent(this, StatsActivity.class);
         intent.putExtra(getString(R.string.intent_extra_numGames), numGames);
         intent.putExtra(getString(R.string.intent_extra_numWins), numWins);
         intent.putExtra(getString(R.string.intent_extra_numLoss), numLoss);
         intent.putExtra(getString(R.string.intent_extra_numCards), numCards);
 
-
         intent.putExtra(getString(R.string.intent_extra_numHist), gameHist.size());
         for (int i =0; i < gameHist.size(); i++) {
-            intent.putExtra(getString(R.string.intent_extra_hist) + "_" + i, gameHist.get(i));
+            int[] game = new int[gameHist.get(i).size()];
+            for (int j = 0; j < game.length; j++) game[j] = gameHist.get(i).get(j);
+            intent.putExtra(getString(R.string.intent_extra_hist) + "_" + i, game);
         }
 
         startActivity(intent);
@@ -299,11 +301,20 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
         JSONArray jsonNumCards  = new JSONArray();
         for (int c : numCards) jsonNumCards.put(c);
 
+        JSONArray jsonGameHist = new JSONArray();
+        for (ArrayList<Integer> game : gameHist) {
+            JSONArray jsonGame = new JSONArray();
+            for (Integer i : game) jsonGame.put(i);
+            jsonGameHist.put(jsonGame);
+        }
+
         SharedPreferences.Editor editor = this.getPreferences(Context.MODE_PRIVATE).edit();
         editor.putInt(getString(R.string.pref_key_numGames), numGames);
         editor.putInt(getString(R.string.pref_key_numWins), numWins);
         editor.putInt(getString(R.string.pref_key_numLoss), numLoss);
         editor.putString(getString(R.string.pref_key_numCards), jsonNumCards.toString());
+        editor.putString(getString(R.string.pref_key_hist), jsonGameHist.toString());
+
         editor.apply();
     }
 
@@ -331,7 +342,15 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
             numCards = new int[52];
         }
 
-        gameHist = new ArrayList<int[]>();
+        gameHist = new LinkedList<>();
+        try {
+            JSONArray jsonGameHist = new JSONArray(sharedPref.getString(getString(R.string.pref_key_hist), "ERROR"));
+            for (int i = 0; i < jsonGameHist.length(); i++) {
+                JSONArray game = jsonGameHist.getJSONArray(i);
+                gameHist.add(new ArrayList<Integer>(game.length()));
+                for (int j = 0; j < game.length(); j++) gameHist.getLast().add(game.getInt(j));
+            }
+        } catch (JSONException ignored) { }
     }
 
 
