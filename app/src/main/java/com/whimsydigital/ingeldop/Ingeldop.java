@@ -199,7 +199,7 @@ public class Ingeldop {
                 sel.remove(i3);
                 dealt = false;
             } else {
-                throw new DiscardException("Can only discard 4 when same suit at the top");
+                throw new DiscardException();
             }
 
         // Trying to discard 2 (only 2 left)
@@ -217,7 +217,7 @@ public class Ingeldop {
                 sel.remove(i1);
                 dealt = false;
             } else {
-                throw new DiscardException("Can only discard adjacent when a pair");
+                throw new DiscardException();
             }
         
         // Trying to discard 2
@@ -243,12 +243,12 @@ public class Ingeldop {
                 sel.remove(i2);
                 dealt = false;
             } else {
-                throw new DiscardException("something");
+                throw new DiscardException();
             }
 
         // Trying to discard not 2 or 4
         } else {
-            throw new DiscardException("Select 2 or 4 cards to discard");
+            throw new DiscardException();
         }
     }
 
@@ -350,14 +350,16 @@ public class Ingeldop {
     }
 }
 
+
 /**
- * 
- */
-class DiscardException extends Exception {
-    public DiscardException(String s) {
-        super(s);
-    }
-}
+ * Exceptions for indicating an incorrect or illegal discard.
+ *
+ * All errors when discarding result in a DiscardException instead
+ * of having individual exception types or exception messages. This
+ * means that if the client wants to know the reason for an exception,
+ * they should inspect the hand themselves.  */
+class DiscardException extends Exception { }
+
 
 /**
  * Representations of Cards and Suits.

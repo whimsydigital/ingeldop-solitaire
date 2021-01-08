@@ -149,17 +149,15 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
      * exception and display a pop-up describing the discard exception. If a
      * discard is allowed, the selected cards are discarded and we update the
      * layout of the hand (because the size changes with a discard). If the
-     * game is over, we call the game over logic.
-     *
-     * TODO: catch different exception types for different discard fails  */
+     * game is over, we call the game over logic.  */
     private void doDiscard() {
         try {
             game.discard();                           // Do the discard
             gameHist.getLast().add(game.handSize());  // Update game history
             handView.requestLayout();                 // Update hand
             if (game.gameOver()) doGameOver();        // Handle game over
-        } catch (DiscardException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (DiscardException ignored) {
+            Toast.makeText(this, getString(R.string.DISCARD_ERROR_TEXT), Toast.LENGTH_LONG).show();
         }
     }
 
