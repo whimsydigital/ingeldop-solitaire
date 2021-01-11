@@ -111,14 +111,12 @@ public class IngeldopActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dealButton:     doDeal();    break;
-            case R.id.discardButton:  doDiscard(); break;
-            case R.id.newGameButton:  newGame();   break;
-            case R.id.statsButton:    doStats();   break;
-            case R.id.zoomInButton:   doZoom(true, false); break;
-            case R.id.zoomOutButton:  doZoom(false, true); break;
-        }
+        if (v.getId() ==  R.id.dealButton)     doDeal();
+        if (v.getId() ==  R.id.discardButton)  doDiscard();
+        if (v.getId() ==  R.id.newGameButton)  newGame();
+        if (v.getId() ==  R.id.statsButton)    doStats();
+        if (v.getId() ==  R.id.zoomInButton)   doZoom(true, false);
+        if (v.getId() ==  R.id.zoomOutButton)  doZoom(false, true);
     }
 
 
