@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * text values of various labels for displaying stats, and
  * updating the history graph with historical games.
  */
-public class StatsActivity extends AppCompatActivity {
+public class StatsActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
 
     // UI Elements
     TextView numWinsTextView;
@@ -46,6 +47,7 @@ public class StatsActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        myToolbar.setOnMenuItemClickListener(this);
 
         // Save UI elements we interact with
         numWinsTextView    = (TextView) findViewById (R.id.numWinsTextView);
@@ -69,14 +71,14 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         // Calculate any additional status values
-        int bestHand = Integer.MAX_VALUE;
-        int worstHand = -1;
+        double bestHand = Double.NaN;
+        double worstHand = Double.NaN;
         int sumHand = 0;
         int numFinish = 0;
 
         for (int i = 0; i < numCards.length; i++) {
-            if (i < bestHand && numCards[i] != 0) bestHand = i;
-            if (i > worstHand && numCards[i] != 0) worstHand = i;
+            if ((Double.isNaN(bestHand) || i < bestHand) && numCards[i] != 0) bestHand = i;
+            if ((Double.isNaN(worstHand) || i > worstHand) && numCards[i] != 0) worstHand = i;
             if (numCards[i] != 0) {
                 numFinish += numCards[i];
                 sumHand += numCards[i]*i;
@@ -118,11 +120,27 @@ public class StatsActivity extends AppCompatActivity {
         historyChart.setDescription(null);
         historyChart.setTouchEnabled(false);
         historyChart.invalidate(); // refresh
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.statsmenu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        setResult(RESULT_OK, null);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
         return true;
     }
 }

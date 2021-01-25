@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -75,7 +74,7 @@ public class HandViewExpanded extends View {
         selPadding = handHeight - cardHeight;
 
         // Get reference to current game & calculate total width
-        Ingeldop game = context.game;
+        Ingeldop game = context.getGame();
         int numCards  = game.handSize();
         int handWidth = (int) (numCards*cardWidth - (numCards-1)*cardWidth*overlap);
 
@@ -94,7 +93,7 @@ public class HandViewExpanded extends View {
         canvas.drawColor(this.getResources().getColor(R.color.background));
 
         // Get reference to current game
-        Ingeldop game = context.game;
+        Ingeldop game = context.getGame();
 
         // Iterate through hand and draw each card
         for (int i = 0; i < game.handSize(); i++) {
@@ -116,7 +115,7 @@ public class HandViewExpanded extends View {
             e.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int) e.getX();
             int y = (int) e.getY();
-            Ingeldop game = context.game;
+            Ingeldop game = context.getGame();
 
             // Check if we clicked on any of the cards in the hand
             for (int i = game.handSize() - 1; i >= 0; i--) {

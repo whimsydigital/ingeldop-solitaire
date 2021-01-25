@@ -11,8 +11,8 @@
     <string name="numWinsText">Games Won: %1$d</string>
     <string name="numLossText">Games Lost: %1$d</string>
     <string name="winPercentText">Win Rate: %1$.2f%%</string>
-    <string name="bestHandText">Best Game: %1$d</string>
-    <string name="worstHandText">Worst Game: %1$d</string>
+    <string name="bestHandText">Best Game: %1$.0f</string>
+    <string name="worstHandText">Worst Game: %1$.0f</string>
     <string name="avgHandText">Avg Game: %1$.2f</string>
 
     <!-- Text to display on discard exceptions -->
