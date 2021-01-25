@@ -1,5 +1,6 @@
 package com.whimsydigital.ingeldop;
 
+import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -64,28 +65,24 @@ public class StatsActivity extends AppCompatActivity implements Toolbar.OnMenuIt
         int numLoss = getIntent().getIntExtra(getString(R.string.intent_extra_numLoss), 0);
         int[] numCards = getIntent().getIntArrayExtra(getString(R.string.intent_extra_numCards));
         int numHist = getIntent().getIntExtra(getString(R.string.intent_extra_numHist), 0);
-        ArrayList<int[]> gameHistory = new ArrayList<int[]>();
+        ArrayList<int[]> gameHistory = new ArrayList<>();
         for (int i = 0; i < numHist; i++) {
             int[] histGame = getIntent().getIntArrayExtra(getString(R.string.intent_extra_hist) + "_" + i);
             gameHistory.add(histGame);
         }
 
-        // Calculate any additional status values
+        // Calculate best, worst, average hands and win percent
         double bestHand = Double.NaN;
         double worstHand = Double.NaN;
         int sumHand = 0;
-        int numFinish = 0;
-
         for (int i = 0; i < numCards.length; i++) {
             if ((Double.isNaN(bestHand) || i < bestHand) && numCards[i] != 0) bestHand = i;
             if ((Double.isNaN(worstHand) || i > worstHand) && numCards[i] != 0) worstHand = i;
             if (numCards[i] != 0) {
-                numFinish += numCards[i];
                 sumHand += numCards[i]*i;
             }
         }
-
-        double averageHand = (double) sumHand / numFinish;
+        double averageHand = (double) sumHand / (numWins + numLoss);
         double winPercent = numGames == 0 ? 0 : (double) numWins / numGames;
 
         // Set the text on various stats labels with the values
@@ -96,24 +93,34 @@ public class StatsActivity extends AppCompatActivity implements Toolbar.OnMenuIt
         worstHandTextView.setText(getString(R.string.worstHandText, worstHand));
         avgHandTextView.setText(getString(R.string.avgHandText, averageHand));
 
+        // Resource that contains colors to plot games with
+        TypedArray colors = getResources().obtainTypedArray(R.array.plotColors);
+
         // Set the data on the chart to historical game data
-        ArrayList<ILineDataSet> lines = new ArrayList<ILineDataSet> ();
+        ArrayList<ILineDataSet> lines = new ArrayList<> ();
+        int cIndex = 0;
         for (int[] game : gameHistory) {
 
             // Convert game data to chart entries
             int i = 0;
-            ArrayList<Entry> entries = new ArrayList<Entry>();
+            ArrayList<Entry> entries = new ArrayList<>();
             for (int val : game) entries.add(new Entry(i++, val));
 
             // Create & config a line data set; add it to the list
             LineDataSet newLine = new LineDataSet(entries, null);
             newLine.setDrawCircles(false);
             newLine.setDrawValues(false);
+            newLine.setMode(LineDataSet.Mode.STEPPED);
+            newLine.setColor(colors.getColor(cIndex++ % colors.length(), 0));
             lines.add(newLine);
         }
 
+        // Only add data if there's been games played
+        if (gameHistory.size() != 0) {
+            historyChart.setData(new LineData(lines));
+        }
+
         // Set history chart data & options
-        historyChart.setData(new LineData(lines));
         historyChart.getLegend().setEnabled(false);
         historyChart.getXAxis().setEnabled(false);
         historyChart.getAxisRight().setEnabled(false);
@@ -133,6 +140,20 @@ public class StatsActivity extends AppCompatActivity implements Toolbar.OnMenuIt
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
+
+        // Set the text on various stats labels with default values
+        numWinsTextView.setText(getString(R.string.numWinsText, 0));
+        numLossTextView.setText(getString(R.string.numLossText, 0));
+        percentWinTextView.setText(getString(R.string.winPercentText,  0.0));
+        bestHandTextView.setText(getString(R.string.bestHandText, Double.NaN));
+        worstHandTextView.setText(getString(R.string.worstHandText, Double.NaN));
+        avgHandTextView.setText(getString(R.string.avgHandText, Double.NaN));
+
+        // Clear & refresh the chart
+        historyChart.clear();
+        historyChart.invalidate();
+
+        // Return a result so saved stats get cleared
         setResult(RESULT_OK, null);
         return true;
     }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="plotColors">
+        <item>#a6cee3</item>
+        <item>#1f78b4</item>
+        <item>#b2df8a</item>
+        <item>#33a02c</item>
+        <item>#fb9a99</item>
+        <item>#e31a1c</item>
+        <item>#fdbf6f</item>
+        <item>#ff7f00</item>
+        <item>#cab2d6</item>
+        <item>#6a3d9a</item>
+        <item>#ffff99</item>
+        <item>#b15928</item>
+    </array>
+</resources>
